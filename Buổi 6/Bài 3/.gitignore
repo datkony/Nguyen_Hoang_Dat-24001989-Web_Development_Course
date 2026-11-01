@@ -1,0 +1,22 @@
+# Bỏ qua các thư mục/file không cần đưa lên Git
+node_modules
+dist
+dist-ssr
+*.local
+
+# Log của npm/yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# File cấu hình của trình soạn thảo / hệ điều hành
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

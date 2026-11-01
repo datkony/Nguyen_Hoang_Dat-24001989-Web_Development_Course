@@ -1,0 +1,19 @@
+{
+  "name": "bai-2-dat-ve-xem-phim",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bài 2 - Form đặt vé xem phim bằng Vue 3 (v-model, computed, kiểm tra dữ liệu)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.44"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.10",
+    "vite": "^8.3.5"
+  }
+}

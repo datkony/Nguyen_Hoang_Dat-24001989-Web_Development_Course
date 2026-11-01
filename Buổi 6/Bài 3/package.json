@@ -1,0 +1,19 @@
+{
+  "name": "bai-3-quan-ly-cong-viec",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bài 3 - Quản lý công việc bằng Vue 3 (v-for, v-model, computed, lọc trạng thái)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.44"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.10",
+    "vite": "^8.3.5"
+  }
+}

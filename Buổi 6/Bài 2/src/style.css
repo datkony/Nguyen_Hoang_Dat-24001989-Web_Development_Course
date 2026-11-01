@@ -1,0 +1,39 @@
+/* ============================================================
+   CSS DÙNG CHUNG CHO TOÀN ỨNG DỤNG
+   ============================================================ */
+
+/* Áp dụng cho mọi phần tử: tính cả padding/border vào kích thước. */
+* {
+  /* Nhờ box-sizing: border-box, width khai báo bao gồm cả padding và border. */
+  box-sizing: border-box;
+}
+
+/* Định dạng chung cho phần thân trang. */
+body {
+  /* Bỏ khoảng lề mặc định của trình duyệt. */
+  margin: 0;
+  /* Phông chữ mặc định, ưu tiên các font có sẵn trên Windows. */
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  /* Màu nền tổng thể (xanh xám rất nhạt). */
+  background-color: #eef2f7;
+  /* Màu chữ mặc định (xám đậm). */
+  color: #1f2937;
+  /* Giãn dòng cho dễ đọc. */
+  line-height: 1.5;
+  /* Tối ưu hiển thị chữ trên các trình duyệt. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ảnh và các phần tử đa phương tiện không vượt quá khung chứa. */
+img {
+  /* Giới hạn chiều rộng tối đa bằng 100% khung chứa. */
+  max-width: 100%;
+}
+
+/* Nút bấm kế thừa phông chữ của trang thay vì dùng phông mặc định của trình duyệt. */
+button,
+input,
+select {
+  /* Kế thừa phông chữ từ phần tử cha. */
+  font: inherit;
+}

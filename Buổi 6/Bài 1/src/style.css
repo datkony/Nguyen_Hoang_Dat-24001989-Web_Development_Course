@@ -1,0 +1,24 @@
+/* ============================================================
+   CSS DÙNG CHUNG CHO TOÀN ỨNG DỤNG
+   ============================================================ */
+
+/* Áp dụng cho mọi phần tử: tính cả padding/border vào kích thước. */
+* {
+  box-sizing: border-box;
+}
+
+/* Định dạng chung cho phần thân trang. */
+body {
+  /* Bỏ khoảng lề mặc định của trình duyệt. */
+  margin: 0;
+  /* Phông chữ mặc định. */
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  /* Màu nền tổng thể. */
+  background-color: #eef2f7;
+  /* Màu chữ mặc định. */
+  color: #1f2937;
+  /* Giãn dòng cho dễ đọc. */
+  line-height: 1.5;
+  /* Tối ưu hiển thị chữ trên các trình duyệt. */
+  -webkit-font-smoothing: antialiased;
+}
