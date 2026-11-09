@@ -1,0 +1,616 @@
+/* ==========================================================================
+   BIẾN TOÀN CỤC
+   Khai báo các biến CSS dùng chung để màu sắc và bán kính đồng nhất toàn trang.
+   ========================================================================== */
+:root {
+  /* Màu chữ chính với độ tương phản cao trên nền sáng. */
+  --mau-chu: #0f172a;
+  /* Màu chữ phụ dùng cho mô tả, nhãn và ghi chú. */
+  --mau-chu-phu: #64748b;
+  /* Màu nền chính của toàn trang. */
+  --mau-nen: #f1f5f9;
+  /* Màu nền của các khối nội dung và thẻ sản phẩm. */
+  --mau-be-mat: #ffffff;
+  /* Màu nhấn chính dùng cho nút và trạng thái nổi bật. */
+  --mau-nhan: #4f46e5;
+  /* Màu nhấn đậm hơn dùng khi rê chuột hoặc nhấn nút. */
+  --mau-nhan-dam: #4338ca;
+  /* Màu xanh lá dùng cho trạng thái còn hàng và thông báo thành công. */
+  --mau-thanh-cong: #15803d;
+  /* Màu nền nhạt của trạng thái còn hàng. */
+  --mau-nen-thanh-cong: #dcfce7;
+  /* Màu đỏ dùng cho trạng thái hết hàng và cảnh báo. */
+  --mau-canh-bao: #b91c1c;
+  /* Màu nền nhạt của trạng thái hết hàng. */
+  --mau-nen-canh-bao: #fee2e2;
+  /* Màu viền nhẹ dùng cho thẻ và khung nội dung. */
+  --mau-vien: #e2e8f0;
+  /* Bán kính bo góc lớn dùng cho thẻ sản phẩm. */
+  --bo-goc-lon: 20px;
+  /* Bán kính bo góc nhỏ dùng cho nút và nhãn. */
+  --bo-goc-nho: 10px;
+  /* Đổ bóng nhẹ giúp thẻ tách khỏi nền mà không gây rối mắt. */
+  --do-bong: 0 18px 40px -24px rgba(15, 23, 42, 0.45);
+}
+
+/* ==========================================================================
+   THIẾT LẬP CHUNG
+   Áp dụng cách tính kích thước nhất quán cho mọi phần tử.
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  /* Tính cả padding và border vào kích thước khai báo để bố cục dễ dự đoán. */
+  box-sizing: border-box;
+}
+
+/* Thiết lập nền, màu chữ và font mặc định cho toàn bộ trang. */
+body {
+  /* Loại bỏ khoảng trắng mặc định của trình duyệt để kiểm soát bố cục hoàn toàn. */
+  margin: 0;
+  /* Font hệ thống giúp trang hiển thị nhanh và hỗ trợ tiếng Việt tốt. */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Màu chữ mặc định lấy từ biến toàn cục. */
+  color: var(--mau-chu);
+  /* Tạo nền chuyển sắc nhẹ tạo chiều sâu cho giao diện. */
+  background:
+    radial-gradient(circle at 10% 0%, rgba(79, 70, 229, 0.12), transparent 42%),
+    radial-gradient(circle at 90% 10%, rgba(14, 165, 233, 0.12), transparent 38%),
+    var(--mau-nen);
+  /* Đặt chiều cao tối thiểu bằng chiều cao khung nhìn để nền phủ kín trang. */
+  min-height: 100vh;
+  /* Tăng khoảng cách dòng giúp văn bản dễ đọc. */
+  line-height: 1.6;
+  /* Giúp chữ hiển thị mượt hơn trên một số nền tảng. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Loại bỏ khoảng trắng mặc định của thẻ tiêu đề để dễ kiểm soát bố cục. */
+h1,
+h2,
+h3,
+p {
+  /* Đặt khoảng cách ngoài về 0, khoảng cách cụ thể sẽ được khai báo theo từng khối. */
+  margin: 0;
+}
+
+/* Định dạng chung cho thẻ code xuất hiện trong phần giới thiệu. */
+code {
+  /* Dùng font đơn cách để phân biệt mã với văn bản thường. */
+  font-family: Consolas, 'Courier New', monospace;
+  /* Tạo nền nhẹ giúp đoạn mã nổi bật. */
+  background: #eef2ff;
+  /* Thêm màu chữ phù hợp với nền sáng. */
+  color: #3730a3;
+  /* Bo góc nhỏ cho đoạn mã. */
+  border-radius: 6px;
+  /* Tạo khoảng đệm nhỏ để chữ không dính sát nền. */
+  padding: 2px 6px;
+}
+
+/* ==========================================================================
+   KHUNG TRANG
+   Giới hạn chiều rộng và căn giữa toàn bộ nội dung.
+   ========================================================================== */
+.khung-trang {
+  /* Giới hạn chiều rộng tối đa để nội dung không quá dài trên màn hình lớn. */
+  max-width: 1200px;
+  /* Tự căn giữa khung trang theo chiều ngang. */
+  margin: 0 auto;
+  /* Tạo khoảng đệm thoáng cho nội dung. */
+  padding: 48px 24px 56px;
+}
+
+/* ==========================================================================
+   PHẦN TIÊU ĐỀ
+   Trình bày tên bài, tiêu đề chính và mô tả ngắn.
+   ========================================================================== */
+.tieu-de-trang {
+  /* Giới hạn chiều rộng phần chữ để dòng không quá dài, dễ đọc. */
+  max-width: 820px;
+  /* Tạo khoảng cách với khu vực thống kê bên dưới. */
+  margin-bottom: 32px;
+}
+
+/* Nhãn nhỏ phía trên tiêu đề chính. */
+.nhan-nho {
+  /* Chữ in hoa giúp nhãn nổi bật như một dòng phân loại. */
+  text-transform: uppercase;
+  /* Giảm kích thước chữ để tạo phân cấp thị giác. */
+  font-size: 0.78rem;
+  /* Tăng khoảng cách giữa các chữ cái cho dễ đọc. */
+  letter-spacing: 0.16em;
+  /* Dùng màu nhấn để tạo điểm nhấn. */
+  color: var(--mau-nhan);
+  /* Đặt độ đậm vừa phải cho nhãn. */
+  font-weight: 700;
+  /* Tạo khoảng cách nhỏ với tiêu đề bên dưới. */
+  margin-bottom: 10px;
+}
+
+/* Tiêu đề chính của trang. */
+h1 {
+  /* Kích thước chữ lớn, co giãn theo khung nhìn nhưng không vượt quá 3rem. */
+  font-size: clamp(2rem, 4vw, 3rem);
+  /* Giảm khoảng cách dòng cho tiêu đề lớn gọn hơn. */
+  line-height: 1.15;
+  /* Đặt độ đậm cao để tạo điểm nhấn. */
+  font-weight: 800;
+  /* Thêm khoảng cách với đoạn mô tả bên dưới. */
+  margin-bottom: 14px;
+}
+
+/* Đoạn mô tả ngắn dưới tiêu đề chính. */
+.mo-ta-trang {
+  /* Dùng màu chữ phụ để phân cấp thông tin. */
+  color: var(--mau-chu-phu);
+  /* Giới hạn chiều rộng để câu chữ dễ theo dõi. */
+  max-width: 720px;
+  /* Kích thước chữ lớn hơn một chút so với mặc định. */
+  font-size: 1.02rem;
+}
+
+/* ==========================================================================
+   KHU VỰC THỐNG KÊ
+   Hiển thị ba chỉ số tổng quan của danh mục.
+   ========================================================================== */
+.luoi-thong-ke {
+  /* Dùng lưới ba cột bằng nhau cho các thẻ thống kê. */
+  display: grid;
+  /* Chia đều không gian cho ba cột. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Tạo khoảng cách giữa các thẻ. */
+  gap: 16px;
+  /* Tạo khoảng cách với khu vực danh mục bên dưới. */
+  margin-bottom: 28px;
+}
+
+/* Khung của một thẻ thống kê. */
+.the-thong-ke {
+  /* Dùng nền trắng để tách khỏi nền trang. */
+  background: var(--mau-be-mat);
+  /* Thêm viền nhẹ giúp thẻ rõ ràng hơn. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc theo biến chung. */
+  border-radius: var(--bo-goc-lon);
+  /* Tạo khoảng đệm bên trong thẻ. */
+  padding: 18px 20px;
+  /* Thêm đổ bóng nhẹ. */
+  box-shadow: var(--do-bong);
+}
+
+/* Nhãn mô tả chỉ số trong thẻ thống kê. */
+.nhan-thong-ke {
+  /* Hiển thị nhãn trên một dòng riêng. */
+  display: block;
+  /* Dùng màu chữ phụ. */
+  color: var(--mau-chu-phu);
+  /* Giảm kích thước chữ cho phù hợp vai trò phụ. */
+  font-size: 0.86rem;
+  /* Tăng nhẹ độ đậm để dễ đọc. */
+  font-weight: 600;
+  /* Tạo khoảng cách với con số bên dưới. */
+  margin-bottom: 4px;
+}
+
+/* Con số của chỉ số thống kê. */
+.gia-tri-thong-ke {
+  /* Hiển thị số lớn, rõ ràng. */
+  font-size: 1.9rem;
+  /* Giảm khoảng cách dòng cho số gọn hơn. */
+  line-height: 1.1;
+  /* Dùng màu chữ chính. */
+  color: var(--mau-chu);
+  /* Đặt độ đậm cao. */
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   THÔNG BÁO MUA HÀNG
+   Phản hồi khi component con phát sự kiện mua lên cha.
+   ========================================================================== */
+.thong-bao-mua {
+  /* Dùng nền xanh nhạt thể hiện thông báo tích cực. */
+  background: var(--mau-nen-thanh-cong);
+  /* Dùng màu chữ xanh đậm để đủ tương phản. */
+  color: var(--mau-thanh-cong);
+  /* Thêm viền cùng tông để thông báo rõ ràng. */
+  border: 1px solid #86efac;
+  /* Bo góc theo biến chung. */
+  border-radius: var(--bo-goc-nho);
+  /* Tạo khoảng đệm thoáng. */
+  padding: 12px 16px;
+  /* Đặt độ đậm vừa phải cho nội dung thông báo. */
+  font-weight: 600;
+  /* Tạo khoảng cách với khu vực danh mục bên dưới. */
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   KHU VỰC DANH MỤC SẢN PHẨM
+   Tiêu đề và lưới thẻ sản phẩm.
+   ========================================================================== */
+.tieu-de-khu-vuc {
+  /* Kích thước chữ vừa phải cho tiêu đề cấp hai. */
+  font-size: 1.4rem;
+  /* Đặt độ đậm cao để tách khỏi nội dung. */
+  font-weight: 800;
+  /* Tạo khoảng cách với lưới sản phẩm. */
+  margin-bottom: 18px;
+}
+
+/* Lưới hiển thị các thẻ sản phẩm. */
+.luoi-san-pham {
+  /* Dùng lưới tự động để số cột thay đổi theo chiều rộng khả dụng. */
+  display: grid;
+  /* Mỗi cột tối thiểu 250px và tự giãn đều phần còn lại. */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* Tạo khoảng cách đều giữa các thẻ. */
+  gap: 22px;
+}
+
+/* ==========================================================================
+   THẺ SẢN PHẨM
+   Giao diện chung của component <the-san-pham>.
+   ========================================================================== */
+.the-san-pham {
+  /* Dùng nền trắng để thẻ nổi bật trên nền trang. */
+  background: var(--mau-be-mat);
+  /* Thêm viền mảnh giúp thẻ rõ ràng. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc lớn cho thẻ. */
+  border-radius: var(--bo-goc-lon);
+  /* Cắt phần ảnh tràn ra ngoài góc bo. */
+  overflow: hidden;
+  /* Đổ bóng nhẹ tạo chiều sâu. */
+  box-shadow: var(--do-bong);
+  /* Hiển thị thẻ dạng cột để các phần xếp dọc. */
+  display: flex;
+  /* Xếp các phần theo chiều dọc. */
+  flex-direction: column;
+  /* Tạo hiệu ứng chuyển động mượt khi rê chuột. */
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+/* Trạng thái rê chuột vào thẻ sản phẩm còn hàng. */
+.the-san-pham:hover {
+  /* Nhấc thẻ lên nhẹ để tạo phản hồi trực quan. */
+  transform: translateY(-4px);
+  /* Tăng đổ bóng khi thẻ nổi lên. */
+  box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.5);
+  /* Đổi màu viền sang tông nhấn nhẹ. */
+  border-color: #c7d2fe;
+}
+
+/* Thẻ của sản phẩm đã hết hàng. */
+.the-san-pham--het-hang {
+  /* Giảm độ tương phản nhẹ để phân biệt sản phẩm không còn bán. */
+  background: #fbfcfe;
+}
+
+/* Không nhấc thẻ hết hàng lên khi rê chuột để tránh gợi ý rằng sản phẩm vẫn mua được. */
+.the-san-pham--het-hang:hover {
+  /* Giữ nguyên vị trí của thẻ. */
+  transform: none;
+  /* Giữ nguyên đổ bóng ban đầu. */
+  box-shadow: var(--do-bong);
+  /* Giữ nguyên màu viền. */
+  border-color: var(--mau-vien);
+}
+
+/* Khung chứa ảnh sản phẩm. */
+.khung-anh {
+  /* Đặt tỉ lệ khung ảnh 4:3 để mọi thẻ có chiều cao ảnh đồng đều. */
+  aspect-ratio: 4 / 3;
+  /* Ẩn phần ảnh có thể tràn ra ngoài khung. */
+  overflow: hidden;
+  /* Cho phép định vị tuyệt đối các nhãn bên trong. */
+  position: relative;
+  /* Dùng nền nhạt trong lúc ảnh đang tải. */
+  background: #e2e8f0;
+}
+
+/* Ảnh sản phẩm bên trong khung. */
+.anh-san-pham {
+  /* Cho ảnh chiếm toàn bộ chiều rộng khung. */
+  width: 100%;
+  /* Cho ảnh chiếm toàn bộ chiều cao khung. */
+  height: 100%;
+  /* Giữ tỉ lệ ảnh và cắt phần thừa để không bị méo. */
+  object-fit: cover;
+  /* Hiển thị ảnh dạng khối để loại bỏ khoảng trắng thừa. */
+  display: block;
+  /* Tạo hiệu ứng phóng nhẹ khi rê chuột. */
+  transition: transform 320ms ease;
+}
+
+/* Phóng nhẹ ảnh khi rê chuột vào thẻ còn hàng. */
+.the-san-pham:hover .anh-san-pham {
+  /* Tăng kích thước ảnh khoảng 4% để tạo hiệu ứng sống động. */
+  transform: scale(1.04);
+}
+
+/* Không phóng ảnh của sản phẩm hết hàng. */
+.the-san-pham--het-hang:hover .anh-san-pham {
+  /* Giữ nguyên kích thước ảnh. */
+  transform: none;
+}
+
+/* Nhãn "Hết hàng" đè lên ảnh. */
+.nhan-het-hang {
+  /* Đặt nhãn ở góc trên bên trái của khung ảnh. */
+  position: absolute;
+  /* Cách mép trên 12px. */
+  top: 12px;
+  /* Cách mép trái 12px. */
+  left: 12px;
+  /* Dùng nền đỏ đậm để cảnh báo rõ ràng. */
+  background: var(--mau-canh-bao);
+  /* Dùng chữ trắng để tương phản tốt. */
+  color: #ffffff;
+  /* Giảm kích thước chữ cho phù hợp nhãn nhỏ. */
+  font-size: 0.75rem;
+  /* Đặt độ đậm cao cho nhãn. */
+  font-weight: 800;
+  /* Tăng khoảng cách chữ nhẹ để dễ đọc. */
+  letter-spacing: 0.04em;
+  /* Chuyển nhãn sang chữ in hoa. */
+  text-transform: uppercase;
+  /* Tạo khoảng đệm cho nhãn. */
+  padding: 6px 10px;
+  /* Bo tròn hoàn toàn hai đầu nhãn. */
+  border-radius: 999px;
+  /* Thêm đổ bóng nhẹ giúp nhãn tách khỏi ảnh. */
+  box-shadow: 0 6px 16px -8px rgba(185, 28, 28, 0.8);
+}
+
+/* Nhãn số lượng còn lại đè lên ảnh. */
+.nhan-ton-kho {
+  /* Đặt nhãn ở góc trên bên phải của khung ảnh. */
+  position: absolute;
+  /* Cách mép trên 12px. */
+  top: 12px;
+  /* Cách mép phải 12px. */
+  right: 12px;
+  /* Dùng nền xanh nhạt. */
+  background: var(--mau-nen-thanh-cong);
+  /* Dùng chữ xanh đậm để tương phản. */
+  color: var(--mau-thanh-cong);
+  /* Giảm kích thước chữ cho phù hợp nhãn nhỏ. */
+  font-size: 0.74rem;
+  /* Đặt độ đậm vừa phải. */
+  font-weight: 700;
+  /* Tạo khoảng đệm cho nhãn. */
+  padding: 5px 10px;
+  /* Bo tròn hoàn toàn hai đầu nhãn. */
+  border-radius: 999px;
+  /* Thêm đổ bóng nhẹ. */
+  box-shadow: 0 6px 16px -10px rgba(21, 128, 61, 0.7);
+}
+
+/* Khu vực nội dung chữ bên dưới ảnh. */
+.noi-dung-the {
+  /* Cho phần nội dung chiếm toàn bộ chiều cao còn lại của thẻ. */
+  flex: 1;
+  /* Hiển thị nội dung dạng cột. */
+  display: flex;
+  /* Xếp nội dung theo chiều dọc. */
+  flex-direction: column;
+  /* Tạo khoảng đệm bên trong thẻ. */
+  padding: 18px;
+  /* Tạo khoảng cách giữa các phần tử con. */
+  gap: 10px;
+}
+
+/* Tên sản phẩm trong thẻ. */
+.ten-san-pham {
+  /* Đặt kích thước chữ vừa phải, nổi bật hơn nội dung thường. */
+  font-size: 1.08rem;
+  /* Giảm khoảng cách dòng cho tên gọn hơn. */
+  line-height: 1.35;
+  /* Đặt độ đậm cao. */
+  font-weight: 800;
+  /* Dùng màu chữ chính. */
+  color: var(--mau-chu);
+}
+
+/* Giá sản phẩm trong thẻ. */
+.gia-san-pham {
+  /* Dùng màu nhấn để giá nổi bật. */
+  color: var(--mau-nhan);
+  /* Tăng kích thước chữ để dễ nhìn. */
+  font-size: 1.12rem;
+  /* Đặt độ đậm cao. */
+  font-weight: 800;
+}
+
+/* Nút bật/tắt mô tả. */
+.nut-mo-ta {
+  /* Cho nút tự căn theo nội dung thay vì kéo hết chiều rộng. */
+  align-self: flex-start;
+  /* Loại bỏ viền mặc định của trình duyệt. */
+  border: 1px solid #c7d2fe;
+  /* Dùng nền trắng cho nút phụ. */
+  background: #ffffff;
+  /* Dùng màu nhấn cho chữ. */
+  color: var(--mau-nhan);
+  /* Giảm kích thước chữ cho phù hợp nút phụ. */
+  font-size: 0.84rem;
+  /* Kế thừa font chữ của trang để nút đồng nhất với phần nội dung còn lại. */
+  font-family: inherit;
+  /* Đặt độ đậm vừa phải. */
+  font-weight: 700;
+  /* Tạo khoảng đệm cho nút. */
+  padding: 7px 12px;
+  /* Bo góc nhỏ cho nút. */
+  border-radius: var(--bo-goc-nho);
+  /* Đổi con trỏ thành bàn tay khi rê chuột. */
+  cursor: pointer;
+  /* Tạo hiệu ứng chuyển màu mượt. */
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+/* Trạng thái rê chuột vào nút mô tả. */
+.nut-mo-ta:hover {
+  /* Đổi nền sang tông nhấn nhạt. */
+  background: #eef2ff;
+  /* Làm đậm màu viền. */
+  border-color: #a5b4fc;
+}
+
+/* Trạng thái focus bàn phím của nút mô tả. */
+.nut-mo-ta:focus-visible {
+  /* Hiển thị viền focus rõ ràng để hỗ trợ điều hướng bằng bàn phím. */
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  /* Tách viền focus khỏi viền nút một khoảng nhỏ. */
+  outline-offset: 2px;
+}
+
+/* Phần mô tả chi tiết của sản phẩm. */
+.mo-ta-san-pham {
+  /* Dùng màu chữ phụ cho nội dung phụ. */
+  color: var(--mau-chu-phu);
+  /* Giảm kích thước chữ nhẹ để phân cấp thông tin. */
+  font-size: 0.9rem;
+  /* Tạo khoảng đệm nhỏ và nền nhạt để tách khỏi nội dung chính. */
+  background: #f8fafc;
+  /* Thêm viền trái màu nhấn để tạo điểm nhấn. */
+  border-left: 3px solid #c7d2fe;
+  /* Bo nhẹ các góc còn lại. */
+  border-radius: 0 8px 8px 0;
+  /* Tạo khoảng đệm bên trong. */
+  padding: 10px 12px;
+  /* Tạo hiệu ứng xuất hiện nhẹ khi mở mô tả. */
+  animation: hien-mo-ta 180ms ease-out;
+}
+
+/* Định nghĩa hiệu ứng xuất hiện của phần mô tả. */
+@keyframes hien-mo-ta {
+  /* Trạng thái bắt đầu: mờ và dịch lên nhẹ. */
+  from {
+    /* Bắt đầu với độ trong suốt hoàn toàn. */
+    opacity: 0;
+    /* Dịch lên 4px tạo cảm giác trượt xuống. */
+    transform: translateY(-4px);
+  }
+  /* Trạng thái kết thúc: hiện rõ và trở về vị trí ban đầu. */
+  to {
+    /* Hiển thị hoàn toàn. */
+    opacity: 1;
+    /* Trở về vị trí ban đầu. */
+    transform: translateY(0);
+  }
+}
+
+/* Nút mua sản phẩm. */
+.nut-mua {
+  /* Đẩy nút mua xuống cuối thẻ, giúp các nút thẳng hàng giữa các thẻ. */
+  margin-top: auto;
+  /* Kéo nút rộng hết phần nội dung. */
+  width: 100%;
+  /* Loại bỏ viền mặc định. */
+  border: none;
+  /* Dùng màu nhấn làm nền. */
+  background: var(--mau-nhan);
+  /* Dùng chữ trắng để tương phản. */
+  color: #ffffff;
+  /* Đặt kích thước chữ vừa phải. */
+  font-size: 0.95rem;
+  /* Kế thừa font chữ của trang để nút đồng nhất với phần nội dung còn lại. */
+  font-family: inherit;
+  /* Đặt độ đậm cao. */
+  font-weight: 800;
+  /* Tạo khoảng đệm cho nút. */
+  padding: 10px 14px;
+  /* Bo góc nhỏ cho nút. */
+  border-radius: var(--bo-goc-nho);
+  /* Đổi con trỏ thành bàn tay khi nút bấm được. */
+  cursor: pointer;
+  /* Tạo hiệu ứng chuyển màu mượt. */
+  transition: background 160ms ease, transform 120ms ease;
+}
+
+/* Trạng thái rê chuột vào nút mua đang bật. */
+.nut-mua:hover:not(:disabled) {
+  /* Làm đậm nền khi rê chuột. */
+  background: var(--mau-nhan-dam);
+}
+
+/* Trạng thái nhấn nút mua. */
+.nut-mua:active:not(:disabled) {
+  /* Thu nhỏ nút rất nhẹ để tạo phản hồi khi nhấn. */
+  transform: scale(0.98);
+}
+
+/* Trạng thái focus bàn phím của nút mua. */
+.nut-mua:focus-visible {
+  /* Hiển thị viền focus rõ ràng để hỗ trợ điều hướng bằng bàn phím. */
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  /* Tách viền focus khỏi viền nút một khoảng nhỏ. */
+  outline-offset: 2px;
+}
+
+/* Trạng thái khóa của nút mua khi sản phẩm hết hàng. */
+.nut-mua:disabled {
+  /* Dùng nền xám để thể hiện nút không khả dụng. */
+  background: #cbd5e1;
+  /* Dùng chữ xám đậm để vẫn đọc được nhãn. */
+  color: #475569;
+  /* Đổi con trỏ thành dấu cấm để người dùng biết không thể bấm. */
+  cursor: not-allowed;
+  /* Loại bỏ hiệu ứng nhấc nút khi nhấn. */
+  transform: none;
+  /* Giảm độ tương phản tổng thể của nút. */
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   CHÂN TRANG
+   Ghi chú hướng dẫn kiểm tra bài.
+   ========================================================================== */
+.chan-trang {
+  /* Tạo khoảng cách với khu vực danh mục. */
+  margin-top: 32px;
+  /* Dùng màu chữ phụ. */
+  color: var(--mau-chu-phu);
+  /* Giảm kích thước chữ cho ghi chú. */
+  font-size: 0.88rem;
+  /* Căn giữa nội dung ghi chú. */
+  text-align: center;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   Điều chỉnh bố cục cho màn hình hẹp.
+   ========================================================================== */
+@media (max-width: 720px) {
+  /* Giảm khoảng đệm của khung trang trên màn hình nhỏ. */
+  .khung-trang {
+    /* Giảm khoảng đệm để tận dụng chiều rộng. */
+    padding: 32px 16px 40px;
+  }
+
+  /* Chuyển lưới thống kê thành một cột trên màn hình hẹp. */
+  .luoi-thong-ke {
+    /* Mỗi thẻ thống kê chiếm một hàng. */
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   TÔN TRỌNG CÀI ĐẶT GIẢM CHUYỂN ĐỘNG
+   Người dùng có thể yêu cầu hệ điều hành giảm hiệu ứng chuyển động.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  /* Loại bỏ hiệu ứng chuyển động của thẻ, ảnh, nút và mô tả. */
+  *,
+  *::before,
+  *::after {
+    /* Rút ngắn mọi hiệu ứng chuyển động xuống gần như tức thời. */
+    transition-duration: 0.001ms !important;
+    /* Rút ngắn mọi hiệu ứng động xuống gần như tức thời. */
+    animation-duration: 0.001ms !important;
+    /* Giới hạn số lần lặp animation để tránh chuyển động kéo dài. */
+    animation-iteration-count: 1 !important;
+  }
+}

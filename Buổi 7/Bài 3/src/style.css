@@ -1,0 +1,752 @@
+/* ==========================================================================
+   BIẾN TOÀN CỤC
+   Khai báo các biến CSS dùng chung để màu sắc và bán kính đồng nhất toàn trang.
+   ========================================================================== */
+:root {
+  /* Màu chữ chính với độ tương phản cao trên nền sáng. */
+  --mau-chu: #0f172a;
+  /* Màu chữ phụ dùng cho nhãn, ghi chú và mô tả. */
+  --mau-chu-phu: #64748b;
+  /* Màu nền chính của toàn trang. */
+  --mau-nen: #f1f5f9;
+  /* Màu nền của các khối nội dung và dòng sản phẩm. */
+  --mau-be-mat: #ffffff;
+  /* Màu nhấn chính dùng cho nút và trạng thái nổi bật. */
+  --mau-nhan: #4f46e5;
+  /* Màu nhấn đậm hơn dùng khi rê chuột hoặc nhấn nút. */
+  --mau-nhan-dam: #4338ca;
+  /* Màu xanh lá dùng cho thông báo thành công và trạng thái tích cực. */
+  --mau-thanh-cong: #15803d;
+  /* Màu nền nhạt của thông báo thành công. */
+  --mau-nen-thanh-cong: #dcfce7;
+  /* Màu đỏ dùng cho nút xóa và cảnh báo. */
+  --mau-canh-bao: #b91c1c;
+  /* Màu nền nhạt của vùng cảnh báo. */
+  --mau-nen-canh-bao: #fee2e2;
+  /* Màu viền nhẹ dùng cho khung nội dung và dòng sản phẩm. */
+  --mau-vien: #e2e8f0;
+  /* Bán kính bo góc lớn dùng cho khung và thẻ tổng quan. */
+  --bo-goc-lon: 20px;
+  /* Bán kính bo góc nhỏ dùng cho nút và nhãn. */
+  --bo-goc-nho: 10px;
+  /* Đổ bóng nhẹ giúp các khối tách khỏi nền mà không gây rối mắt. */
+  --do-bong: 0 18px 40px -24px rgba(15, 23, 42, 0.45);
+}
+
+/* ==========================================================================
+   THIẾT LẬP CHUNG
+   Áp dụng cách tính kích thước nhất quán cho mọi phần tử.
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  /* Tính cả padding và border vào kích thước khai báo để bố cục dễ dự đoán. */
+  box-sizing: border-box;
+}
+
+/* Thiết lập nền, màu chữ và font mặc định cho toàn bộ trang. */
+body {
+  /* Loại bỏ khoảng trắng mặc định của trình duyệt để kiểm soát bố cục hoàn toàn. */
+  margin: 0;
+  /* Font hệ thống giúp trang hiển thị nhanh và hỗ trợ tiếng Việt tốt. */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Màu chữ mặc định lấy từ biến toàn cục. */
+  color: var(--mau-chu);
+  /* Tạo nền chuyển sắc nhẹ tạo chiều sâu cho giao diện. */
+  background:
+    radial-gradient(circle at 10% 0%, rgba(79, 70, 229, 0.12), transparent 42%),
+    radial-gradient(circle at 90% 10%, rgba(14, 165, 233, 0.12), transparent 38%),
+    var(--mau-nen);
+  /* Đặt chiều cao tối thiểu bằng chiều cao khung nhìn để nền phủ kín trang. */
+  min-height: 100vh;
+  /* Tăng khoảng cách dòng giúp văn bản dễ đọc. */
+  line-height: 1.6;
+  /* Giúp chữ hiển thị mượt hơn trên một số nền tảng. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Loại bỏ khoảng trắng mặc định của các thẻ tiêu đề và đoạn văn. */
+h1,
+h2,
+h3,
+p {
+  /* Đặt khoảng cách ngoài về 0, khoảng cách cụ thể sẽ được khai báo theo từng khối. */
+  margin: 0;
+}
+
+/* Định dạng chung cho thẻ code xuất hiện trong phần giới thiệu. */
+code {
+  /* Dùng font đơn cách để phân biệt mã với văn bản thường. */
+  font-family: Consolas, 'Courier New', monospace;
+  /* Tạo nền nhẹ giúp đoạn mã nổi bật. */
+  background: #eef2ff;
+  /* Thêm màu chữ phù hợp với nền sáng. */
+  color: #3730a3;
+  /* Bo góc nhỏ cho đoạn mã. */
+  border-radius: 6px;
+  /* Tạo khoảng đệm nhỏ để chữ không dính sát nền. */
+  padding: 2px 6px;
+}
+
+/* ==========================================================================
+   KHUNG TRANG
+   Giới hạn chiều rộng và căn giữa toàn bộ nội dung.
+   ========================================================================== */
+.khung-trang {
+  /* Giới hạn chiều rộng tối đa để nội dung không quá dài trên màn hình lớn. */
+  max-width: 1120px;
+  /* Tự căn giữa khung trang theo chiều ngang. */
+  margin: 0 auto;
+  /* Tạo khoảng đệm thoáng cho nội dung. */
+  padding: 48px 24px 56px;
+}
+
+/* ==========================================================================
+   PHẦN TIÊU ĐỀ
+   Trình bày tên bài, tiêu đề chính và mô tả ngắn.
+   ========================================================================== */
+.tieu-de-trang {
+  /* Giới hạn chiều rộng phần chữ để dòng không quá dài, dễ đọc. */
+  max-width: 820px;
+  /* Tạo khoảng cách với khu vực tổng quan bên dưới. */
+  margin-bottom: 32px;
+}
+
+/* Nhãn nhỏ phía trên tiêu đề chính. */
+.nhan-nho {
+  /* Chữ in hoa giúp nhãn nổi bật như một dòng phân loại. */
+  text-transform: uppercase;
+  /* Giảm kích thước chữ để tạo phân cấp thị giác. */
+  font-size: 0.78rem;
+  /* Tăng khoảng cách giữa các chữ cái cho dễ đọc. */
+  letter-spacing: 0.16em;
+  /* Dùng màu nhấn để tạo điểm nhấn. */
+  color: var(--mau-nhan);
+  /* Đặt độ đậm vừa phải cho nhãn. */
+  font-weight: 700;
+  /* Tạo khoảng cách nhỏ với tiêu đề bên dưới. */
+  margin-bottom: 10px;
+}
+
+/* Tiêu đề chính của trang. */
+h1 {
+  /* Kích thước chữ lớn, co giãn theo khung nhìn nhưng không vượt quá 3rem. */
+  font-size: clamp(2rem, 4vw, 3rem);
+  /* Giảm khoảng cách dòng cho tiêu đề lớn gọn hơn. */
+  line-height: 1.15;
+  /* Đặt độ đậm cao để tạo điểm nhấn. */
+  font-weight: 800;
+  /* Thêm khoảng cách với đoạn mô tả bên dưới. */
+  margin-bottom: 14px;
+}
+
+/* Đoạn mô tả ngắn dưới tiêu đề chính. */
+.mo-ta-trang {
+  /* Dùng màu chữ phụ để phân cấp thông tin. */
+  color: var(--mau-chu-phu);
+  /* Giới hạn chiều rộng để câu chữ dễ theo dõi. */
+  max-width: 760px;
+  /* Kích thước chữ lớn hơn một chút so với mặc định. */
+  font-size: 1.02rem;
+}
+
+/* ==========================================================================
+   KHU VỰC TỔNG QUAN
+   Hiển thị tổng số lượng, tổng tiền và số dòng sản phẩm.
+   ========================================================================== */
+.luoi-tong-quan {
+  /* Dùng lưới ba cột bằng nhau cho các thẻ tổng quan. */
+  display: grid;
+  /* Chia đều không gian cho ba cột. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Tạo khoảng cách giữa các thẻ. */
+  gap: 16px;
+  /* Tạo khoảng cách với khu vực giỏ hàng bên dưới. */
+  margin-bottom: 24px;
+}
+
+/* Khung của một thẻ tổng quan. */
+.the-tong-quan {
+  /* Dùng nền trắng để tách khỏi nền trang. */
+  background: var(--mau-be-mat);
+  /* Thêm viền nhẹ giúp thẻ rõ ràng hơn. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc theo biến chung. */
+  border-radius: var(--bo-goc-lon);
+  /* Tạo khoảng đệm bên trong thẻ. */
+  padding: 18px 20px;
+  /* Thêm đổ bóng nhẹ. */
+  box-shadow: var(--do-bong);
+}
+
+/* Nhãn mô tả chỉ số trong thẻ tổng quan. */
+.nhan-tong-quan {
+  /* Hiển thị nhãn trên một dòng riêng. */
+  display: block;
+  /* Dùng màu chữ phụ để phân cấp thông tin. */
+  color: var(--mau-chu-phu);
+  /* Giảm kích thước chữ cho phù hợp với vai trò nhãn. */
+  font-size: 0.88rem;
+  /* Tăng nhẹ độ đậm để nhãn dễ đọc. */
+  font-weight: 600;
+  /* Tạo khoảng cách với giá trị bên dưới. */
+  margin-bottom: 4px;
+}
+
+/* Giá trị số của chỉ số trong thẻ tổng quan. */
+.gia-tri-tong-quan {
+  /* Hiển thị giá trị trên một dòng riêng. */
+  display: block;
+  /* Tăng kích thước chữ để giá trị nổi bật. */
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+  /* Giảm khoảng cách dòng cho số liệu gọn hơn. */
+  line-height: 1.2;
+  /* Đặt độ đậm cao cho giá trị. */
+  font-weight: 800;
+  /* Dùng màu nhấn để thu hút sự chú ý vào số liệu chính. */
+  color: var(--mau-nhan);
+  /* Ngắt từ an toàn để chuỗi tiền dài không tràn khỏi thẻ. */
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================================================
+   THÔNG BÁO PHẢN HỒI
+   Hiển thị kết quả sau khi cha xử lý sự kiện từ component con.
+   ========================================================================== */
+.thong-bao {
+  /* Dùng nền xanh nhạt để thể hiện thông báo tích cực hoặc thông tin. */
+  background: var(--mau-nen-thanh-cong);
+  /* Dùng màu chữ xanh đậm để đảm bảo độ tương phản. */
+  color: var(--mau-thanh-cong);
+  /* Thêm viền cùng tông để thông báo rõ ràng hơn. */
+  border: 1px solid #bbf7d0;
+  /* Bo góc theo biến nhỏ. */
+  border-radius: var(--bo-goc-nho);
+  /* Tạo khoảng đệm vừa phải cho nội dung thông báo. */
+  padding: 12px 16px;
+  /* Tạo khoảng cách với các khối phía trên và dưới. */
+  margin-bottom: 24px;
+  /* Đặt độ đậm vừa phải để thông báo dễ đọc. */
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   KHU VỰC GIỎ HÀNG
+   Bao gồm tiêu đề khu vực và danh sách các dòng sản phẩm.
+   ========================================================================== */
+.khu-vuc-gio-hang {
+  /* Dùng nền trắng để tách khu vực giỏ hàng khỏi nền trang. */
+  background: var(--mau-be-mat);
+  /* Thêm viền nhẹ giúp khu vực rõ ràng hơn. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc lớn cho khung chứa. */
+  border-radius: var(--bo-goc-lon);
+  /* Tạo khoảng đệm bên trong khung. */
+  padding: 24px;
+  /* Thêm đổ bóng nhẹ để khung nổi khỏi nền. */
+  box-shadow: var(--do-bong);
+}
+
+/* Tiêu đề của khu vực giỏ hàng. */
+.tieu-de-khu-vuc {
+  /* Tăng kích thước chữ để phân cấp với nội dung bên dưới. */
+  font-size: 1.25rem;
+  /* Đặt độ đậm cao cho tiêu đề. */
+  font-weight: 700;
+  /* Tạo khoảng cách với danh sách sản phẩm. */
+  margin-bottom: 18px;
+}
+
+/* Danh sách các dòng sản phẩm được xếp theo chiều dọc. */
+.danh-sach-gio-hang {
+  /* Dùng flex column để mỗi dòng chiếm trọn chiều ngang. */
+  display: flex;
+  /* Xếp các dòng từ trên xuống dưới. */
+  flex-direction: column;
+  /* Tạo khoảng cách giữa các dòng sản phẩm. */
+  gap: 14px;
+}
+
+/* ==========================================================================
+   COMPONENT CON <dong-gio-hang>
+   Mỗi dòng sản phẩm là một thẻ riêng, có thông tin và các nút điều khiển.
+   ========================================================================== */
+.dong-gio-hang {
+  /* Dùng lưới hai cột: thông tin bên trái và điều khiển bên phải. */
+  display: grid;
+  /* Cột thông tin co giãn, cột điều khiển giữ kích thước theo nội dung. */
+  grid-template-columns: minmax(0, 1fr) auto;
+  /* Căn các phần tử theo trục dọc ở giữa. */
+  align-items: center;
+  /* Tạo khoảng cách giữa hai cột. */
+  gap: 16px;
+  /* Dùng nền xám rất nhạt để phân biệt từng dòng. */
+  background: #f8fafc;
+  /* Thêm viền nhẹ cho từng dòng. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc theo biến nhỏ. */
+  border-radius: var(--bo-goc-nho);
+  /* Tạo khoảng đệm bên trong dòng. */
+  padding: 16px 18px;
+}
+
+/* Khối thông tin của dòng sản phẩm. */
+.dong-gio-hang__thong-tin {
+  /* Cho phép nội dung co lại khi màn hình hẹp. */
+  min-width: 0;
+}
+
+/* Tên sản phẩm trong dòng hàng. */
+.dong-gio-hang__ten {
+  /* Tăng kích thước chữ để tên sản phẩm nổi bật. */
+  font-size: 1.05rem;
+  /* Đặt độ đậm cao cho tên sản phẩm. */
+  font-weight: 700;
+  /* Tạo khoảng cách với các dòng thông tin bên dưới. */
+  margin-bottom: 6px;
+  /* Ngắt từ an toàn để tên dài không tràn khỏi khung. */
+  overflow-wrap: anywhere;
+}
+
+/* Mỗi dòng mô tả đơn giá hoặc thành tiền. */
+.dong-gio-hang__dong {
+  /* Dùng màu chữ phụ cho thông tin bổ sung. */
+  color: var(--mau-chu-phu);
+  /* Đặt kích thước chữ nhỏ hơn tên sản phẩm. */
+  font-size: 0.92rem;
+}
+
+/* Đơn giá của sản phẩm. */
+.dong-gio-hang__don-gia {
+  /* Dùng màu chữ chính để dễ đọc hơn phần nhãn. */
+  color: var(--mau-chu);
+  /* Đặt độ đậm vừa phải cho giá trị. */
+  font-weight: 600;
+}
+
+/* Thành tiền của cả dòng sản phẩm. */
+.dong-gio-hang__thanh-tien {
+  /* Dùng màu nhấn để làm nổi bật số tiền quan trọng. */
+  color: var(--mau-nhan);
+  /* Tăng nhẹ kích thước chữ so với nhãn xung quanh. */
+  font-size: 1rem;
+  /* Đặt độ đậm cao cho số tiền. */
+  font-weight: 800;
+}
+
+/* Khối chứa các nút điều chỉnh số lượng và nút xóa. */
+.dong-gio-hang__dieu-khien {
+  /* Dùng flex để xếp các nút và số lượng trên cùng một hàng. */
+  display: flex;
+  /* Căn các phần tử theo trục dọc ở giữa. */
+  align-items: center;
+  /* Tạo khoảng cách giữa các nút. */
+  gap: 8px;
+  /* Cho phép khối xuống dòng khi không đủ chỗ. */
+  flex-wrap: wrap;
+  /* Căn nội dung về phía cuối của cột điều khiển. */
+  justify-content: flex-end;
+}
+
+/* Nhãn bao quanh ô nhập số lượng, giúp nhãn ẩn vẫn liên kết với input. */
+.dong-gio-hang__nhap-so-luong {
+  /* Dùng flex để ô nhập nằm gọn trong nhãn mà không tạo khoảng trống thừa. */
+  display: inline-flex;
+  /* Căn ô nhập theo trục dọc ở giữa. */
+  align-items: center;
+  /* Đặt vị trí tương đối để nhãn ẩn có thể định vị tuyệt đối bên trong. */
+  position: relative;
+}
+
+/* Ô nhập số lượng cho phép người dùng gõ trực tiếp bằng bàn phím. */
+.dong-gio-hang__o-nhap {
+  /* Đặt chiều rộng cố định để ô nhập cân đối với hai nút tăng giảm. */
+  width: 64px;
+  /* Căn giữa con số trong ô nhập. */
+  text-align: center;
+  /* Đặt độ đậm cao cho con số để dễ đọc. */
+  font-weight: 800;
+  /* Dùng font kế thừa để ô nhập đồng bộ với giao diện. */
+  font-family: inherit;
+  /* Tăng nhẹ kích thước chữ để dễ đọc. */
+  font-size: 1rem;
+  /* Dùng màu chữ chính. */
+  color: var(--mau-chu);
+  /* Tạo nền trắng để ô nhập tách khỏi nền xám của dòng. */
+  background: var(--mau-be-mat);
+  /* Thêm viền nhẹ quanh ô nhập. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc nhỏ cho ô nhập. */
+  border-radius: 8px;
+  /* Tạo khoảng đệm dọc và ngang cho con số. */
+  padding: 7px 8px;
+  /* Đổi con trỏ thành hình con trỏ văn bản để báo hiệu có thể gõ. */
+  cursor: text;
+  /* Tạo hiệu ứng chuyển màu mượt khi ô nhập được chọn. */
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+/* Trạng thái rê chuột của ô nhập số lượng. */
+.dong-gio-hang__o-nhap:hover {
+  /* Đổi viền sang màu nhấn để báo hiệu ô nhập có thể tương tác. */
+  border-color: var(--mau-nhan);
+}
+
+/* Trạng thái ô nhập đang được chọn để gõ. */
+.dong-gio-hang__o-nhap:focus {
+  /* Bỏ viền mặc định của trình duyệt. */
+  outline: none;
+  /* Đổi viền sang màu nhấn để thể hiện ô nhập đang hoạt động. */
+  border-color: var(--mau-nhan);
+  /* Thêm vòng sáng mờ quanh ô nhập để dễ nhận biết. */
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+}
+
+/* Trạng thái ô nhập chứa giá trị không hợp lệ. */
+.dong-gio-hang__o-nhap[aria-invalid='true'] {
+  /* Đổi viền sang màu cảnh báo để người dùng thấy dữ liệu đang sai. */
+  border-color: var(--mau-canh-bao);
+  /* Thêm vòng sáng đỏ mờ quanh ô nhập sai. */
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.14);
+}
+
+/* Nhãn chỉ dành cho trình đọc màn hình, không hiển thị trên giao diện. */
+.chi-doc {
+  /* Đặt vị trí tuyệt đối để nhãn không chiếm chỗ trong bố cục. */
+  position: absolute;
+  /* Thu nhỏ nhãn xuống còn một điểm ảnh. */
+  width: 1px;
+  /* Thu nhỏ chiều cao nhãn xuống còn một điểm ảnh. */
+  height: 1px;
+  /* Tạo khoảng đệm bằng không để nhãn không tạo khoảng trống. */
+  padding: 0;
+  /* Bỏ đường viền của nhãn. */
+  border: 0;
+  /* Ẩn phần nội dung tràn ra ngoài kích thước một điểm ảnh. */
+  overflow: hidden;
+  /* Cắt bớt nội dung theo khung một điểm ảnh. */
+  clip: rect(0, 0, 0, 0);
+  /* Đặt khoảng trắng về không để nhãn không ảnh hưởng bố cục. */
+  white-space: nowrap;
+}
+
+/* Hộp xác nhận xóa hiển thị sau khi người dùng bấm nút Xóa. */
+.dong-gio-hang__xac-nhan {
+  /* Chiếm toàn bộ chiều ngang của lưới để nằm dưới hai cột. */
+  grid-column: 1 / -1;
+  /* Dùng flex để xếp nội dung và các nút theo chiều dọc. */
+  display: flex;
+  /* Xếp nội dung và nút thành từng hàng dọc. */
+  flex-direction: column;
+  /* Tạo khoảng cách giữa câu hỏi và nhóm nút. */
+  gap: 10px;
+  /* Tạo nền đỏ rất nhạt để phân biệt vùng xác nhận nguy hiểm. */
+  background: var(--mau-nen-canh-bao);
+  /* Thêm viền đỏ nhạt bao quanh hộp xác nhận. */
+  border: 1px solid #fecaca;
+  /* Bo góc theo biến nhỏ của giao diện. */
+  border-radius: var(--bo-goc-nho);
+  /* Tạo khoảng đệm cho nội dung hộp xác nhận. */
+  padding: 12px 14px;
+  /* Tạo khoảng cách nhỏ phía trên hộp xác nhận. */
+  margin-top: 4px;
+}
+
+/* Câu hỏi trong hộp xác nhận xóa. */
+.dong-gio-hang__xac-nhan-noi-dung {
+  /* Dùng màu đỏ đậm để nhấn mạnh hành động nguy hiểm. */
+  color: var(--mau-canh-bao);
+  /* Đặt kích thước chữ vừa phải cho câu hỏi. */
+  font-size: 0.92rem;
+  /* Đặt độ đậm vừa phải để câu hỏi dễ đọc. */
+  font-weight: 600;
+  /* Ngắt từ an toàn để tên sản phẩm dài không tràn khung. */
+  overflow-wrap: anywhere;
+}
+
+/* Nhóm hai nút xác nhận và hủy trong hộp xác nhận. */
+.dong-gio-hang__xac-nhan-nut {
+  /* Dùng flex để xếp hai nút trên cùng một hàng. */
+  display: flex;
+  /* Tạo khoảng cách giữa hai nút. */
+  gap: 8px;
+  /* Cho phép hai nút xuống dòng khi không đủ chỗ. */
+  flex-wrap: wrap;
+}
+
+/* Thông báo lỗi khi số lượng nhập không hợp lệ. */
+.dong-gio-hang__loi {
+  /* Chiếm toàn bộ chiều ngang của lưới để nằm dưới hai cột. */
+  grid-column: 1 / -1;
+  /* Dùng màu đỏ đậm để thông báo lỗi nổi bật. */
+  color: var(--mau-canh-bao);
+  /* Đặt kích thước chữ nhỏ hơn nội dung chính. */
+  font-size: 0.85rem;
+  /* Đặt độ đậm vừa phải cho thông báo lỗi. */
+  font-weight: 700;
+  /* Tạo khoảng cách nhỏ phía trên thông báo. */
+  margin-top: 4px;
+}
+
+/* Ghi chú giải thích giới hạn số lượng. */
+.dong-gio-hang__ghi-chu {
+  /* Chiếm toàn bộ chiều ngang của lưới để nằm dưới hai cột. */
+  grid-column: 1 / -1;
+  /* Dùng màu chữ phụ cho ghi chú. */
+  color: var(--mau-chu-phu);
+  /* Giảm kích thước chữ cho phù hợp với vai trò ghi chú. */
+  font-size: 0.82rem;
+  /* Tạo khoảng cách nhỏ phía trên ghi chú. */
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   NÚT BẤM
+   Định dạng chung cho các nút tăng, giảm và xóa.
+   ========================================================================== */
+.nut {
+  /* Dùng font kế thừa từ trang để nút đồng bộ với giao diện. */
+  font-family: inherit;
+  /* Đặt kích thước chữ vừa phải cho nút. */
+  font-size: 0.92rem;
+  /* Đặt độ đậm vừa phải cho nhãn nút. */
+  font-weight: 700;
+  /* Dùng màu chữ chính cho nút trung tính. */
+  color: var(--mau-chu);
+  /* Dùng nền trắng cho nút trung tính. */
+  background: var(--mau-be-mat);
+  /* Thêm viền nhẹ để nút rõ ràng trên nền sáng. */
+  border: 1px solid var(--mau-vien);
+  /* Bo góc nhỏ theo biến chung. */
+  border-radius: 8px;
+  /* Tạo khoảng đệm dọc và ngang cho nút. */
+  padding: 7px 12px;
+  /* Đổi con trỏ thành hình bàn tay để báo hiệu có thể bấm. */
+  cursor: pointer;
+  /* Tạo hiệu ứng chuyển màu mượt khi rê chuột hoặc nhấn. */
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* Trạng thái rê chuột của nút đang bật. */
+.nut:hover:not(:disabled) {
+  /* Đổi viền sang màu nhấn để báo hiệu nút có thể tương tác. */
+  border-color: var(--mau-nhan);
+  /* Đổi màu chữ sang màu nhấn để tăng độ nổi bật. */
+  color: var(--mau-nhan);
+}
+
+/* Trạng thái nhấn chuột của nút đang bật. */
+.nut:active:not(:disabled) {
+  /* Dịch nút xuống một chút tạo cảm giác phản hồi vật lý. */
+  transform: translateY(1px);
+}
+
+/* Trạng thái nút bị khóa. */
+.nut:disabled {
+  /* Giảm độ mờ để người dùng thấy nút không dùng được. */
+  opacity: 0.45;
+  /* Đổi con trỏ thành dấu cấm để báo hiệu không thể bấm. */
+  cursor: not-allowed;
+}
+
+/* Viền tiêu điểm hiển thị rõ khi điều hướng bằng bàn phím. */
+.nut:focus-visible {
+  /* Tạo viền ngoài màu nhấn để dễ nhận biết nút đang được chọn. */
+  outline: 3px solid rgba(79, 70, 229, 0.35);
+  /* Tách viền tiêu điểm khỏi viền nút để nhìn rõ hơn. */
+  outline-offset: 2px;
+}
+
+/* Nút tăng số lượng dùng màu nhấn để thể hiện hành động chính. */
+.nut--tang {
+  /* Dùng nền màu nhấn cho nút tăng. */
+  background: var(--mau-nhan);
+  /* Dùng chữ trắng để tương phản với nền đậm. */
+  color: #ffffff;
+  /* Dùng viền cùng màu nền để nút liền khối. */
+  border-color: var(--mau-nhan);
+  /* Đặt chiều rộng tối thiểu để nút vuông vắn hơn. */
+  min-width: 38px;
+}
+
+/* Trạng thái rê chuột của nút tăng. */
+.nut--tang:hover:not(:disabled) {
+  /* Dùng màu nhấn đậm hơn khi rê chuột. */
+  background: var(--mau-nhan-dam);
+  /* Giữ màu chữ trắng khi nền đổi đậm. */
+  color: #ffffff;
+  /* Dùng viền cùng màu nền đậm. */
+  border-color: var(--mau-nhan-dam);
+}
+
+/* Nút giảm số lượng dùng màu trung tính nhưng có kích thước giống nút tăng. */
+.nut--giam {
+  /* Đặt chiều rộng tối thiểu để hai nút tăng giảm cân đối. */
+  min-width: 38px;
+}
+
+/* Nút xóa dùng tông đỏ để phân biệt hành động nguy hiểm. */
+.nut--xoa {
+  /* Dùng nền đỏ nhạt cho nút xóa. */
+  background: var(--mau-nen-canh-bao);
+  /* Dùng chữ đỏ đậm để đảm bảo độ tương phản. */
+  color: var(--mau-canh-bao);
+  /* Dùng viền đỏ nhạt để nút hài hòa với nền. */
+  border-color: #fecaca;
+  /* Tạo khoảng cách lớn hơn một chút để tách nút xóa khỏi cụm tăng giảm. */
+  margin-left: 4px;
+}
+
+/* Trạng thái rê chuột của nút xóa. */
+.nut--xoa:hover:not(:disabled) {
+  /* Dùng nền đỏ đậm hơn khi rê chuột. */
+  background: #fecaca;
+  /* Giữ màu chữ đỏ đậm để dễ đọc. */
+  color: var(--mau-canh-bao);
+  /* Dùng viền đỏ đậm hơn để tăng phản hồi. */
+  border-color: #fca5a5;
+}
+
+/* Nút xác nhận xóa dùng nền đỏ đậm để thể hiện hành động không thể hoàn tác. */
+.nut--xac-nhan {
+  /* Dùng nền đỏ đậm cho nút xác nhận. */
+  background: var(--mau-canh-bao);
+  /* Dùng chữ trắng để tương phản với nền đậm. */
+  color: #ffffff;
+  /* Dùng viền cùng màu nền để nút liền khối. */
+  border-color: var(--mau-canh-bao);
+}
+
+/* Trạng thái rê chuột của nút xác nhận xóa. */
+.nut--xac-nhan:hover:not(:disabled) {
+  /* Dùng nền đỏ đậm hơn khi rê chuột. */
+  background: #b91c1c;
+  /* Giữ màu chữ trắng khi nền đổi đậm. */
+  color: #ffffff;
+  /* Dùng viền cùng màu nền đậm. */
+  border-color: #b91c1c;
+}
+
+/* Nút hủy dùng tông trung tính để người dùng dễ chọn giữ sản phẩm lại. */
+.nut--huy {
+  /* Dùng nền trắng cho nút hủy. */
+  background: var(--mau-be-mat);
+  /* Dùng màu chữ chính cho nút hủy. */
+  color: var(--mau-chu);
+}
+
+/* Trạng thái rê chuột của nút hủy. */
+.nut--huy:hover:not(:disabled) {
+  /* Đổi viền sang màu nhấn khi rê chuột. */
+  border-color: var(--mau-nhan);
+  /* Đổi màu chữ sang màu nhấn để tăng phản hồi. */
+  color: var(--mau-nhan);
+}
+
+/* ==========================================================================
+   TRẠNG THÁI GIỎ HÀNG TRỐNG
+   Hiển thị thông báo khi không còn sản phẩm nào.
+   ========================================================================== */
+.gio-hang-trong {
+  /* Căn giữa nội dung thông báo. */
+  text-align: center;
+  /* Dùng màu chữ phụ để thông báo nhẹ nhàng, không gây cảm giác lỗi. */
+  color: var(--mau-chu-phu);
+  /* Tăng kích thước chữ để thông báo dễ nhận biết. */
+  font-size: 1.05rem;
+  /* Đặt độ đậm vừa phải cho thông báo. */
+  font-weight: 600;
+  /* Tạo nền xám nhạt để thông báo có khối riêng. */
+  background: #f8fafc;
+  /* Thêm viền nét đứt để thể hiện trạng thái rỗng. */
+  border: 1px dashed #cbd5e1;
+  /* Bo góc theo biến nhỏ. */
+  border-radius: var(--bo-goc-nho);
+  /* Tạo khoảng đệm rộng giúp thông báo cân đối trong khung. */
+  padding: 40px 20px;
+}
+
+/* ==========================================================================
+   CHÂN TRANG
+   Ghi chú hướng dẫn kiểm tra bài.
+   ========================================================================== */
+.chan-trang {
+  /* Dùng màu chữ phụ cho ghi chú. */
+  color: var(--mau-chu-phu);
+  /* Đặt kích thước chữ nhỏ hơn nội dung chính. */
+  font-size: 0.9rem;
+  /* Tạo khoảng cách với khu vực giỏ hàng bên trên. */
+  margin-top: 20px;
+  /* Căn giữa ghi chú cho cân đối với trang. */
+  text-align: center;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   Điều chỉnh bố cục cho màn hình nhỏ để nội dung không bị tràn.
+   ========================================================================== */
+@media (max-width: 720px) {
+  /* Giảm khoảng đệm của khung trang trên thiết bị di động. */
+  .khung-trang {
+    /* Dùng khoảng đệm nhỏ hơn để tận dụng chiều ngang màn hình. */
+    padding: 32px 16px 40px;
+  }
+
+  /* Chuyển lưới tổng quan từ ba cột sang một cột. */
+  .luoi-tong-quan {
+    /* Mỗi thẻ tổng quan chiếm trọn một hàng. */
+    grid-template-columns: 1fr;
+  }
+
+  /* Giảm khoảng đệm của khu vực giỏ hàng trên màn hình hẹp. */
+  .khu-vuc-gio-hang {
+    /* Dùng khoảng đệm nhỏ hơn cho phù hợp màn hình di động. */
+    padding: 18px;
+  }
+
+  /* Chuyển dòng sản phẩm sang bố cục một cột. */
+  .dong-gio-hang {
+    /* Xếp thông tin và điều khiển theo chiều dọc. */
+    grid-template-columns: 1fr;
+  }
+
+  /* Căn cụm điều khiển về bên trái khi đã xuống dòng. */
+  .dong-gio-hang__dieu-khien {
+    /* Đặt nội dung sát mép trái thay vì mép phải. */
+    justify-content: flex-start;
+  }
+}
+
+/* Điều chỉnh thêm cho màn hình rất nhỏ. */
+@media (max-width: 420px) {
+  /* Giảm kích thước tiêu đề chính để không chiếm quá nhiều chiều cao. */
+  h1 {
+    /* Đặt kích thước chữ cố định nhỏ hơn cho màn hình hẹp. */
+    font-size: 1.8rem;
+  }
+
+  /* Cho cụm điều khiển chiếm toàn bộ chiều ngang. */
+  .dong-gio-hang__dieu-khien {
+    /* Dàn đều các nút trên một hàng nếu còn đủ chỗ. */
+    width: 100%;
+  }
+}
+
+/* Tôn trọng cài đặt giảm chuyển động của người dùng. */
+@media (prefers-reduced-motion: reduce) {
+  /* Áp dụng cho mọi phần tử có hiệu ứng chuyển động. */
+  *,
+  *::before,
+  *::after {
+    /* Tắt hiệu ứng chuyển màu và biến đổi để tránh gây khó chịu. */
+    transition-duration: 0.01ms !important;
+    /* Tắt hiệu ứng động để giao diện ổn định hơn. */
+    animation-duration: 0.01ms !important;
+  }
+}

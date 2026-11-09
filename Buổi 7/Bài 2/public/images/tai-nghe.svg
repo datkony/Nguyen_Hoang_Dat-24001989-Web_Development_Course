@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Tai nghe Bluetooth">
+  <!-- Định nghĩa gradient nền để ảnh có màu chuyển sắc hiện đại. -->
+  <defs>
+    <linearGradient id="nen-tai-nghe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1" />
+      <stop offset="1" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <!-- Vẽ nền gradient phủ toàn bộ khung ảnh. -->
+  <rect width="800" height="600" fill="url(#nen-tai-nghe)" />
+  <!-- Vẽ vòng tròn trang trí mờ phía sau sản phẩm. -->
+  <circle cx="400" cy="300" r="220" fill="rgba(255, 255, 255, 0.09)" />
+  <!-- Vẽ vòng cung băng đô của tai nghe. -->
+  <path d="M235 345 V300 A165 165 0 0 1 565 300 V345" fill="none" stroke="#ffffff" stroke-width="36" stroke-linecap="round" />
+  <!-- Vẽ ốp tai bên trái. -->
+  <rect x="190" y="320" width="96" height="160" rx="44" fill="#ffffff" />
+  <!-- Vẽ ốp tai bên phải. -->
+  <rect x="514" y="320" width="96" height="160" rx="44" fill="#ffffff" />
+  <!-- Vẽ đệm tai bên trái màu xanh. -->
+  <rect x="214" y="348" width="48" height="104" rx="24" fill="#6366f1" />
+  <!-- Vẽ đệm tai bên phải màu xanh. -->
+  <rect x="538" y="348" width="48" height="104" rx="24" fill="#6366f1" />
+  <!-- Vẽ điểm nhấn nhỏ trên băng đô. -->
+  <circle cx="400" cy="155" r="14" fill="#ffffff" opacity="0.85" />
+</svg>

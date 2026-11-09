@@ -1,0 +1,20 @@
+# Bỏ qua thư mục chứa các gói phụ thuộc được cài bằng npm.
+node_modules/
+
+# Bỏ qua thư mục chứa kết quả build của Vite.
+dist/
+
+# Bỏ qua thư mục báo cáo độ phủ kiểm thử nếu được tạo.
+coverage/
+
+# Bỏ qua các tệp cấu hình môi trường cục bộ.
+*.local
+
+# Bỏ qua các tệp hệ điều hành và trình soạn thảo tự sinh.
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Bỏ qua tệp nhật ký lỗi của npm.
+npm-debug.log*

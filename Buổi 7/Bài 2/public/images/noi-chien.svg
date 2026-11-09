@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Nồi chiên không dầu">
+  <!-- Định nghĩa gradient nền đỏ cam cho ảnh nồi chiên. -->
+  <defs>
+    <linearGradient id="nen-noi-chien" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#be123c" />
+      <stop offset="1" stop-color="#fb923c" />
+    </linearGradient>
+  </defs>
+  <!-- Vẽ nền gradient phủ toàn bộ khung ảnh. -->
+  <rect width="800" height="600" fill="url(#nen-noi-chien)" />
+  <!-- Vẽ vòng tròn trang trí mờ phía sau nồi chiên. -->
+  <circle cx="400" cy="310" r="225" fill="rgba(255, 255, 255, 0.09)" />
+  <!-- Vẽ thân nồi chiên bo tròn. -->
+  <rect x="230" y="180" width="340" height="330" rx="52" fill="#ffffff" />
+  <!-- Vẽ phần nắp trên của nồi. -->
+  <rect x="250" y="205" width="300" height="46" rx="23" fill="#fda4af" />
+  <!-- Vẽ tay cầm phía trước nồi. -->
+  <rect x="330" y="330" width="140" height="34" rx="17" fill="#be123c" />
+  <!-- Vẽ bảng điều khiển nhỏ trên thân nồi. -->
+  <rect x="330" y="390" width="140" height="58" rx="16" fill="#1e293b" />
+  <!-- Vẽ màn hình hiển thị số trên bảng điều khiển. -->
+  <rect x="350" y="404" width="66" height="18" rx="6" fill="#fb923c" />
+  <!-- Vẽ nút xoay điều chỉnh bên cạnh màn hình. -->
+  <circle cx="448" cy="422" r="13" fill="#e2e8f0" />
+  <!-- Vẽ khe thoát khí phía trên nắp nồi. -->
+  <g fill="#be123c" opacity="0.55">
+    <rect x="470" y="220" width="46" height="6" rx="3" />
+    <rect x="470" y="232" width="46" height="6" rx="3" />
+    <rect x="470" y="244" width="46" height="6" rx="3" />
+  </g>
+  <!-- Vẽ chân đế bên trái. -->
+  <rect x="262" y="502" width="54" height="20" rx="10" fill="#ffffff" />
+  <!-- Vẽ chân đế bên phải. -->
+  <rect x="484" y="502" width="54" height="20" rx="10" fill="#ffffff" />
+</svg>

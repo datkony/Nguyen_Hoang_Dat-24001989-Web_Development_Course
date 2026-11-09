@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Máy xay sinh tố">
+  <!-- Định nghĩa gradient nền xanh lá cho ảnh máy xay. -->
+  <defs>
+    <linearGradient id="nen-may-xay" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15803d" />
+      <stop offset="1" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+  <!-- Vẽ nền gradient phủ toàn bộ khung ảnh. -->
+  <rect width="800" height="600" fill="url(#nen-may-xay)" />
+  <!-- Vẽ vòng tròn trang trí mờ phía sau máy xay. -->
+  <circle cx="400" cy="305" r="225" fill="rgba(255, 255, 255, 0.09)" />
+  <!-- Vẽ nắp trên của cối xay. -->
+  <rect x="300" y="118" width="200" height="42" rx="18" fill="#ffffff" />
+  <!-- Vẽ núm xoay nhỏ trên nắp. -->
+  <rect x="370" y="102" width="60" height="26" rx="13" fill="#d1fae5" />
+  <!-- Vẽ thân cối thủy tinh. -->
+  <path d="M305 160 H495 L472 350 Q468 380 438 380 H362 Q332 380 328 350 Z" fill="#ffffff" opacity="0.92" />
+  <!-- Vẽ mức nước sinh tố bên trong cối. -->
+  <path d="M327 330 H473 L465 360 Q463 380 438 380 H362 Q337 380 335 360 Z" fill="#f97316" opacity="0.9" />
+  <!-- Vẽ các bọt sinh tố để tạo cảm giác tươi mát. -->
+  <circle cx="370" cy="350" r="12" fill="#fed7aa" opacity="0.8" />
+  <!-- Vẽ bọt thứ hai. -->
+  <circle cx="412" cy="354" r="9" fill="#fed7aa" opacity="0.75" />
+  <!-- Vẽ bọt thứ ba. -->
+  <circle cx="445" cy="346" r="7" fill="#fed7aa" opacity="0.7" />
+  <!-- Vẽ đế máy xay. -->
+  <rect x="290" y="384" width="220" height="130" rx="30" fill="#ffffff" />
+  <!-- Vẽ bảng điều khiển trên đế máy. -->
+  <rect x="320" y="408" width="160" height="44" rx="14" fill="#166534" />
+  <!-- Vẽ ba nút tốc độ. -->
+  <circle cx="354" cy="430" r="10" fill="#86efac" />
+  <!-- Vẽ nút tốc độ thứ hai. -->
+  <circle cx="400" cy="430" r="10" fill="#86efac" />
+  <!-- Vẽ nút tốc độ thứ ba. -->
+  <circle cx="446" cy="430" r="10" fill="#86efac" />
+  <!-- Vẽ nhãn công tắc nhỏ trên đế. -->
+  <rect x="350" y="468" width="100" height="12" rx="6" fill="#cbd5e1" />
+  <!-- Vẽ chân đế bên trái. -->
+  <rect x="312" y="514" width="60" height="18" rx="9" fill="#ffffff" />
+  <!-- Vẽ chân đế bên phải. -->
+  <rect x="428" y="514" width="60" height="18" rx="9" fill="#ffffff" />
+</svg>
