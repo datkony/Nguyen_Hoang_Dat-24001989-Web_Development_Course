@@ -1,0 +1,17 @@
+<!-- Biểu tượng tab trình duyệt: một chiếc hộp sản phẩm trên nền xanh của ứng dụng. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Quản lý sản phẩm">
+  <!-- Nền tròn bo góc màu xanh, đồng bộ với màu nhấn chính của giao diện. -->
+  <rect width="64" height="64" rx="14" fill="#2563eb" />
+
+  <!-- Thân chiếc hộp sản phẩm màu trắng. -->
+  <path d="M18 24 32 17l14 7v16L32 47 18 40Z" fill="#ffffff" />
+
+  <!-- Các đường gấp của hộp giúp biểu tượng dễ nhận biết ở kích thước nhỏ. -->
+  <path
+    d="M18 24l14 7 14-7M32 31v16"
+    fill="none"
+    stroke="#2563eb"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+</svg>

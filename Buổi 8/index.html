@@ -1,0 +1,402 @@
+<!doctype html>
+<!-- Khai báo ngôn ngữ của trang là tiếng Việt để trình duyệt và công cụ hỗ trợ hiểu đúng. -->
+<html lang="vi">
+  <head>
+    <!-- Khai báo bảng mã UTF-8 để hiển thị đúng tiếng Việt có dấu. -->
+    <meta charset="UTF-8" />
+    <!-- Thiết lập chế độ hiển thị responsive trên màn hình di động và máy tính bảng. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Mô tả ngắn gọn nội dung của ứng dụng cho công cụ tìm kiếm và trình duyệt. -->
+    <meta
+      name="description"
+      content="Ứng dụng quản lý sản phẩm bằng PHP, MySQL và Vue.js: thêm, sửa, xóa và xem danh sách sản phẩm."
+    />
+    <!-- Đặt tiêu đề hiển thị trên tab trình duyệt. -->
+    <title>Quản lý sản phẩm - PHP, MySQL &amp; Vue.js</title>
+    <!-- Khai báo biểu tượng hiển thị trên tab trình duyệt. -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <!-- Nạp tệp CSS giao diện của ứng dụng. -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!--
+      Phần tử gốc để Vue gắn toàn bộ ứng dụng vào.
+      Thuộc tính v-cloak ẩn nội dung chưa biên dịch cho đến khi Vue khởi động xong,
+      tránh việc người dùng thấy các cú pháp {{ }} trước khi giao diện sẵn sàng.
+    -->
+    <div id="app" v-cloak>
+      <!-- Liên kết bỏ qua điều hướng giúp người dùng bàn phím chuyển nhanh tới nội dung chính. -->
+      <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
+
+      <!-- Khung bao ngoài giới hạn chiều rộng và căn giữa toàn bộ giao diện. -->
+      <div class="app-shell">
+        <!-- Phần đầu trang hiển thị tên ứng dụng và thông tin tổng quan. -->
+        <header class="page-header">
+          <!-- Nhóm nội dung giới thiệu chính của trang. -->
+          <div class="header-content">
+            <!-- Dòng nhãn nhỏ mô tả công nghệ sử dụng. -->
+            <p class="eyebrow">PHP · MySQL · Vue.js</p>
+            <!-- Tiêu đề chính của ứng dụng. -->
+            <h1>Quản lý sản phẩm</h1>
+            <!-- Mô tả ngắn về các chức năng chính của trang. -->
+            <p class="subtitle">
+              Thêm, sửa và xóa sản phẩm trực tiếp trên giao diện Vue.js. Mọi thay đổi được lưu
+              vào MySQL thông qua API PHP.
+            </p>
+          </div>
+
+          <!-- Thẻ trạng thái hiển thị số lượng sản phẩm hiện có và trạng thái tải dữ liệu. -->
+          <div class="status-card" aria-live="polite">
+            <!-- Nhãn mô tả ý nghĩa của con số bên dưới. -->
+            <span class="status-label">Sản phẩm hiện có</span>
+            <!-- Con số lấy từ mảng products, tự cập nhật sau mỗi lần gọi lại API. -->
+            <strong class="status-value" data-testid="product-count">{{ products.length }}</strong>
+            <!-- Dòng trạng thái thay đổi giữa "Đang tải..." và "Đã đồng bộ". -->
+            <span class="status-note" :class="{ 'is-loading': loading }">
+              <!-- Hiển thị trạng thái tương ứng với biến loading. -->
+              {{ loading ? 'Đang tải dữ liệu...' : 'Đã đồng bộ với máy chủ' }}
+            </span>
+          </div>
+        </header>
+
+        <!-- Khu vực nội dung chính gồm biểu mẫu bên trái và bảng dữ liệu bên phải. -->
+        <main id="main-content" class="layout">
+          <!--
+            PANEL 1: BIỂU MẪU THÊM / SỬA SẢN PHẨM
+            Tiêu đề và nút lưu thay đổi theo biến isEditing.
+          -->
+          <section class="panel form-panel" aria-labelledby="form-title">
+            <!-- Phần tiêu đề của biểu mẫu. -->
+            <div class="panel-heading">
+              <!-- Tiêu đề động: thêm mới hoặc sửa sản phẩm đang chọn. -->
+              <h2 id="form-title" data-testid="form-title">
+                <!-- Khi đang sửa, hiển thị mã sản phẩm; ngược lại hiển thị tiêu đề thêm mới. -->
+                {{ isEditing ? 'Sửa sản phẩm #' + form.id : 'Thêm sản phẩm mới' }}
+              </h2>
+              <!-- Mô tả ngắn hướng dẫn người dùng nhập dữ liệu. -->
+              <p class="panel-description">
+                <!-- Nội dung mô tả thay đổi theo chế độ thêm hoặc sửa. -->
+                {{ isEditing
+                  ? 'Cập nhật thông tin rồi bấm "Cập nhật" để lưu thay đổi.'
+                  : 'Nhập thông tin sản phẩm rồi bấm "Lưu sản phẩm" để thêm mới.' }}
+              </p>
+            </div>
+
+            <!--
+              Biểu mẫu sản phẩm.
+              @submit.prevent ngăn trình duyệt tải lại trang và gọi phương thức saveProduct.
+            -->
+            <form class="product-form" novalidate @submit.prevent="saveProduct">
+              <!-- Ô nhập tên sản phẩm, ràng buộc hai chiều với form.name qua v-model. -->
+              <div class="field">
+                <!-- Nhãn liên kết với ô nhập thông qua thuộc tính for/id. -->
+                <label for="product-name">Tên sản phẩm</label>
+                <!-- Ô nhập văn bản có giới hạn 100 ký tự giống cột name trong MySQL. -->
+                <input
+                  id="product-name"
+                  v-model="form.name"
+                  type="text"
+                  maxlength="100"
+                  placeholder="Ví dụ: Bút bi"
+                  autocomplete="off"
+                  :disabled="submitting"
+                  data-testid="name-input"
+                />
+                <!-- Gợi ý giới hạn ký tự để người dùng nhập đúng quy định. -->
+                <p class="field-hint">Từ 1 đến 100 ký tự sau khi bỏ khoảng trắng hai đầu.</p>
+              </div>
+
+              <!-- Ô nhập đơn giá, ràng buộc hai chiều với form.price. -->
+              <div class="field">
+                <!-- Nhãn liên kết với ô nhập đơn giá. -->
+                <label for="product-price">Đơn giá (đồng)</label>
+                <!--
+                  Ô nhập số nguyên dương.
+                  v-model.number tự chuyển giá trị nhập thành số trước khi gửi lên API.
+                -->
+                <input
+                  id="product-price"
+                  v-model.number="form.price"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="Ví dụ: 5000"
+                  :disabled="submitting"
+                  data-testid="price-input"
+                />
+                <!-- Gợi ý quy tắc kiểm tra đơn giá. -->
+                <p class="field-hint">Số nguyên lớn hơn 0, đơn vị tính bằng đồng.</p>
+              </div>
+
+              <!-- Ô nhập số lượng tồn, ràng buộc hai chiều với form.stock. -->
+              <div class="field">
+                <!-- Nhãn liên kết với ô nhập số lượng tồn. -->
+                <label for="product-stock">Số lượng tồn</label>
+                <!--
+                  Ô nhập số nguyên không âm.
+                  Giá trị 0 hợp lệ và có nghĩa là sản phẩm đã hết hàng.
+                -->
+                <input
+                  id="product-stock"
+                  v-model.number="form.stock"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="Ví dụ: 20"
+                  :disabled="submitting"
+                  data-testid="stock-input"
+                />
+                <!-- Gợi ý quy tắc kiểm tra tồn kho. -->
+                <p class="field-hint">Số nguyên không âm; nhập 0 nếu sản phẩm đã hết hàng.</p>
+              </div>
+
+              <!-- Ghi chú cho biết dữ liệu còn được kiểm tra lại ở phía PHP. -->
+              <p class="form-note">
+                Dữ liệu được kiểm tra ở cả giao diện và API PHP trước khi ghi vào MySQL.
+              </p>
+
+              <!-- Nhóm nút thao tác của biểu mẫu. -->
+              <div class="form-actions">
+                <!--
+                  Nút gửi biểu mẫu.
+                  Khi đang gửi, nút bị vô hiệu hóa và đổi chữ để tránh gửi trùng yêu cầu.
+                -->
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  :disabled="submitting"
+                  data-testid="save-button"
+                >
+                  <!-- Hiển thị trạng thái đang lưu hoặc nhãn phù hợp với chế độ hiện tại. -->
+                  {{ submitting ? 'Đang lưu...' : isEditing ? 'Cập nhật' : 'Lưu sản phẩm' }}
+                </button>
+
+                <!-- Nút hủy chế độ sửa, chỉ hiển thị khi người dùng đã chọn một dòng để sửa. -->
+                <button
+                  v-if="isEditing"
+                  type="button"
+                  class="btn btn-secondary"
+                  :disabled="submitting"
+                  data-testid="cancel-button"
+                  @click="cancelEdit"
+                >
+                  <!-- Nhãn của nút hủy chỉnh sửa. -->
+                  Hủy
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!--
+            PANEL 2: BẢNG DANH SÁCH SẢN PHẨM
+            Dữ liệu được tải từ API và hiển thị bằng v-for.
+          -->
+          <section class="panel table-panel" aria-labelledby="table-title">
+            <!-- Phần tiêu đề và nút làm mới của bảng. -->
+            <div class="panel-heading table-heading">
+              <!-- Nhóm tiêu đề và mô tả của bảng. -->
+              <div>
+                <!-- Tiêu đề của khu vực bảng dữ liệu. -->
+                <h2 id="table-title">Danh sách sản phẩm</h2>
+                <!-- Mô tả ngắn về nguồn dữ liệu và cách cập nhật. -->
+                <p class="panel-description">
+                  Dữ liệu được tải từ <code>api/products.php</code> và tự làm mới sau mỗi thao tác.
+                </p>
+              </div>
+
+              <!-- Nút gọi lại API để cập nhật bảng mà không tải lại trang. -->
+              <button
+                type="button"
+                class="btn btn-ghost"
+                :disabled="loading"
+                data-testid="refresh-button"
+                @click="fetchProducts"
+              >
+                <!-- Đổi nhãn khi đang tải để người dùng biết yêu cầu đang được xử lý. -->
+                {{ loading ? 'Đang tải...' : 'Làm mới' }}
+              </button>
+            </div>
+
+            <!-- Thẻ thống kê nhanh về tổng số sản phẩm và tổng giá trị tồn kho. -->
+            <div class="stats-row" aria-label="Thống kê nhanh">
+              <!-- Thẻ hiển thị tổng số sản phẩm trong danh sách. -->
+              <div class="stat-chip">
+                <!-- Nhãn của chỉ số tổng sản phẩm. -->
+                <span>Tổng sản phẩm</span>
+                <!-- Giá trị được tính trực tiếp từ độ dài mảng products. -->
+                <strong data-testid="total-products">{{ products.length }}</strong>
+              </div>
+              <!-- Thẻ hiển thị tổng giá trị tồn kho theo công thức giá nhân số lượng. -->
+              <div class="stat-chip">
+                <!-- Nhãn của chỉ số tổng giá trị tồn kho. -->
+                <span>Tổng giá trị tồn</span>
+                <!-- Giá trị do computed totalInventoryValue tính và được định dạng tiền tệ. -->
+                <strong data-testid="inventory-value">{{ formatCurrency(totalInventoryValue) }}</strong>
+              </div>
+            </div>
+
+            <!--
+              Thông báo lỗi do API hoặc lỗi mạng trả về.
+              role="alert" giúp trình đọc màn hình đọc ngay khi lỗi xuất hiện.
+            -->
+            <div
+              v-if="errorMessage"
+              class="alert alert-error"
+              role="alert"
+              data-testid="error-message"
+            >
+              <!-- Nội dung thông báo lỗi. -->
+              <span>{{ errorMessage }}</span>
+              <!-- Nút đóng thông báo lỗi để giải phóng không gian giao diện. -->
+              <button
+                type="button"
+                class="alert-close"
+                aria-label="Đóng thông báo lỗi"
+                @click="errorMessage = ''"
+              >
+                ×
+              </button>
+            </div>
+
+            <!-- Thông báo thành công sau khi thêm, sửa hoặc xóa sản phẩm. -->
+            <div
+              v-if="successMessage"
+              class="alert alert-success"
+              role="status"
+              data-testid="success-message"
+            >
+              <!-- Nội dung thông báo thành công. -->
+              <span>{{ successMessage }}</span>
+              <!-- Nút đóng thông báo thành công. -->
+              <button
+                type="button"
+                class="alert-close"
+                aria-label="Đóng thông báo thành công"
+                @click="successMessage = ''"
+              >
+                ×
+              </button>
+            </div>
+
+            <!-- Trạng thái đang tải dữ liệu lần đầu hoặc khi bấm "Làm mới". -->
+            <div v-if="loading" class="state-box" data-testid="loading-state">
+              <!-- Vòng xoay trang trí giúp người dùng nhận biết đang xử lý. -->
+              <span class="spinner" aria-hidden="true"></span>
+              <!-- Nội dung thông báo đang tải. -->
+              <p>Đang tải danh sách sản phẩm...</p>
+            </div>
+
+            <!-- Trạng thái khi API trả về mảng rỗng. -->
+            <div v-else-if="products.length === 0" class="state-box" data-testid="empty-state">
+              <!-- Biểu tượng minh họa đơn giản cho trạng thái rỗng. -->
+              <span class="empty-icon" aria-hidden="true">📦</span>
+              <!-- Thông báo chưa có sản phẩm. -->
+              <p>Chưa có sản phẩm nào. Hãy thêm sản phẩm đầu tiên bằng biểu mẫu bên cạnh.</p>
+            </div>
+
+            <!-- Khung cuộn ngang giúp bảng không tràn màn hình trên thiết bị nhỏ. -->
+            <div v-else class="table-wrap">
+              <!-- Bảng hiển thị danh sách sản phẩm. -->
+              <table>
+                <!-- Mô tả ẩn dành cho trình đọc màn hình. -->
+                <caption class="visually-hidden">
+                  Danh sách sản phẩm gồm mã, tên, đơn giá, số lượng tồn và các nút thao tác
+                </caption>
+                <!-- Phần đầu bảng khai báo ý nghĩa của từng cột. -->
+                <thead>
+                  <!-- Một hàng chứa tiêu đề của tất cả các cột. -->
+                  <tr>
+                    <!-- Cột mã sản phẩm. -->
+                    <th scope="col">ID</th>
+                    <!-- Cột tên sản phẩm. -->
+                    <th scope="col">Tên sản phẩm</th>
+                    <!-- Cột đơn giá, căn phải để dễ so sánh số. -->
+                    <th scope="col" class="align-right">Đơn giá</th>
+                    <!-- Cột số lượng tồn. -->
+                    <th scope="col" class="align-center">Số lượng tồn</th>
+                    <!-- Cột chứa hai nút Sửa và Xóa. -->
+                    <th scope="col" class="align-right">Thao tác</th>
+                  </tr>
+                </thead>
+                <!-- Phần thân bảng sinh dữ liệu động bằng v-for. -->
+                <tbody>
+                  <!--
+                    Lặp qua từng sản phẩm trong mảng products.
+                    :key dùng id duy nhất giúp Vue cập nhật DOM hiệu quả và chính xác.
+                  -->
+                  <tr
+                    v-for="product in products"
+                    :key="product.id"
+                    :class="{ 'is-editing': editingId === product.id }"
+                    :data-testid="'product-row-' + product.id"
+                  >
+                    <!-- Hiển thị mã sản phẩm. -->
+                    <td class="id-cell">#{{ product.id }}</td>
+                    <!-- Hiển thị tên sản phẩm. -->
+                    <td class="name-cell">{{ product.name }}</td>
+                    <!-- Hiển thị đơn giá đã định dạng theo tiền Việt Nam. -->
+                    <td class="align-right money-cell">{{ formatCurrency(product.price) }}</td>
+                    <!-- Hiển thị số lượng tồn kèm nhãn trạng thái còn hàng/hết hàng. -->
+                    <td class="align-center">
+                      <!-- Nhãn đổi màu và đổi nội dung tùy theo giá trị tồn kho. -->
+                      <span
+                        class="stock-badge"
+                        :class="product.stock > 0 ? 'in-stock' : 'out-of-stock'"
+                      >
+                        <!-- Số lượng tồn thực tế. -->
+                        {{ product.stock }}
+                        <!-- Chú thích trạng thái tương ứng. -->
+                        <small>{{ product.stock > 0 ? 'còn hàng' : 'hết hàng' }}</small>
+                      </span>
+                    </td>
+                    <!-- Nhóm nút thao tác trên từng dòng sản phẩm. -->
+                    <td class="align-right">
+                      <!-- Nút đưa dữ liệu của dòng hiện tại lên biểu mẫu để sửa. -->
+                      <button
+                        type="button"
+                        class="btn btn-small btn-secondary"
+                        :disabled="submitting"
+                        :data-testid="'edit-button-' + product.id"
+                        @click="startEdit(product)"
+                      >
+                        <!-- Nhãn của nút sửa. -->
+                        Sửa
+                      </button>
+                      <!-- Nút xóa sản phẩm, sẽ hỏi xác nhận trước khi gửi yêu cầu DELETE. -->
+                      <button
+                        type="button"
+                        class="btn btn-small btn-danger"
+                        :disabled="submitting"
+                        :data-testid="'delete-button-' + product.id"
+                        @click="deleteProduct(product)"
+                      >
+                        <!-- Nhãn của nút xóa. -->
+                        Xóa
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+
+        <!-- Chân trang ghi chú công nghệ và đường dẫn API đang sử dụng. -->
+        <footer class="page-footer">
+          <!-- Thông tin ngắn về bài tập và công nghệ. -->
+          <p>Bài tập Tuần 8 · Quản lý sản phẩm với PHP, MySQL và Vue.js</p>
+          <!-- Đường dẫn tương đối tới API để người dùng biết nguồn dữ liệu. -->
+          <p>API: <code>api/products.php</code></p>
+        </footer>
+      </div>
+    </div>
+
+    <!--
+      Nạp thư viện Vue 3 bản đầy đủ (có trình biên dịch template) từ thư mục nội bộ.
+      Nhờ lưu thư viện trong dự án, ứng dụng vẫn chạy được khi không có Internet.
+    -->
+    <script src="vendor/vue.global.prod.js"></script>
+    <!-- Nạp mã JavaScript khởi tạo ứng dụng Vue và xử lý gọi API. -->
+    <script src="js/app.js"></script>
+  </body>
+</html>

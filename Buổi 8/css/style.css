@@ -1,0 +1,1078 @@
+/*
+ * ============================================================================
+ * GIAI ĐOẠN 3: TỆP CSS GIAO DIỆN QUẢN LÝ SẢN PHẨM
+ * ----------------------------------------------------------------------------
+ * Tệp này định nghĩa toàn bộ giao diện cho trang Vue.js:
+ *   - Biến màu và kiểu chữ dùng chung.
+ *   - Bố cục hai cột gồm biểu mẫu và bảng dữ liệu.
+ *   - Kiểu dáng cho ô nhập, nút bấm, thông báo và bảng sản phẩm.
+ *   - Các điểm ngắt responsive cho màn hình nhỏ.
+ * ============================================================================
+ */
+
+/* Khai báo các biến CSS dùng chung để thay đổi bảng màu ở một nơi duy nhất. */
+:root {
+  /* Màu nền tổng thể của trang. */
+  --color-bg: #f3f6fb;
+  /* Màu nền của các khối nội dung như panel và bảng. */
+  --color-surface: #ffffff;
+  /* Màu chữ chính, đậm và dễ đọc. */
+  --color-text: #16213a;
+  /* Màu chữ phụ cho mô tả và ghi chú. */
+  --color-muted: #64708a;
+  /* Màu viền nhẹ cho các khối và ô nhập. */
+  --color-border: #dce3ef;
+  /* Màu nhấn chính dùng cho nút lưu và trạng thái đang hoạt động. */
+  --color-primary: #2563eb;
+  /* Màu nhấn đậm hơn khi rê chuột lên nút chính. */
+  --color-primary-dark: #1d4ed8;
+  /* Màu nền nhạt của vùng nhấn chính. */
+  --color-primary-soft: #e8efff;
+  /* Màu xanh lá dùng cho trạng thái thành công và còn hàng. */
+  --color-success: #137a4b;
+  /* Màu nền nhạt tương ứng với màu xanh lá. */
+  --color-success-bg: #e3f8ed;
+  /* Màu đỏ dùng cho nút xóa, lỗi và trạng thái hết hàng. */
+  --color-danger: #b42318;
+  /* Màu nền nhạt tương ứng với màu đỏ. */
+  --color-danger-bg: #fee9e7;
+  /* Màu vàng dùng cho cảnh báo nhẹ. */
+  --color-warning: #9a5b00;
+  /* Màu nền nhạt tương ứng với màu vàng. */
+  --color-warning-bg: #fff4dc;
+  /* Bo góc lớn cho panel và các khối chính. */
+  --radius-lg: 20px;
+  /* Bo góc trung bình cho nút và ô nhập. */
+  --radius-md: 12px;
+  /* Bo góc nhỏ cho nhãn trạng thái. */
+  --radius-sm: 999px;
+  /* Đổ bóng nhẹ giúp các panel nổi khỏi nền. */
+  --shadow-soft: 0 16px 40px rgba(22, 33, 58, 0.08);
+  /* Đổ bóng nhỏ hơn cho nút khi rê chuột. */
+  --shadow-button: 0 8px 18px rgba(37, 99, 235, 0.22);
+}
+
+/* Áp dụng cách tính kích thước bao gồm cả viền và padding cho mọi phần tử. */
+*,
+*::before,
+*::after {
+  /* Giúp chiều rộng khai báo luôn bao gồm border và padding. */
+  box-sizing: border-box;
+}
+
+/* Ẩn hoàn toàn ứng dụng khi Vue chưa biên dịch xong template. */
+[v-cloak] {
+  /* Dùng !important để bảo đảm quy tắc này không bị ghi đè bởi kiểu khác. */
+  display: none !important;
+}
+
+/* Thiết lập kiểu chữ, màu nền và khoảng cách cơ bản cho toàn bộ trang. */
+body {
+  /* Loại bỏ khoảng cách mặc định của trình duyệt. */
+  margin: 0;
+  /* Dùng bộ font hệ thống để giao diện hiển thị tự nhiên trên mọi hệ điều hành. */
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  /* Màu chữ chính lấy từ biến CSS. */
+  color: var(--color-text);
+  /* Nền chuyển sắc nhẹ giúp trang có chiều sâu nhưng không gây rối mắt. */
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.1), transparent 32rem),
+    radial-gradient(circle at bottom right, rgba(19, 122, 75, 0.07), transparent 30rem),
+    var(--color-bg);
+  /* Bảo đảm trang luôn cao tối thiểu bằng chiều cao màn hình. */
+  min-height: 100vh;
+  /* Tăng khoảng cách dòng để văn bản dễ đọc hơn. */
+  line-height: 1.6;
+  /* Làm mượt chữ trên một số trình duyệt. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Kế thừa font chữ và màu chữ cho các phần tử biểu mẫu. */
+button,
+input,
+select,
+textarea {
+  /* Kế thừa font chữ từ body để giao diện đồng nhất. */
+  font: inherit;
+  /* Kế thừa màu chữ từ phần tử cha. */
+  color: inherit;
+}
+
+/* Loại bỏ khoảng cách mặc định của tiêu đề và đoạn văn để dễ kiểm soát bố cục. */
+h1,
+h2,
+h3,
+p {
+  /* Đặt khoảng cách ngoài bằng 0, sau đó khai báo riêng khi cần. */
+  margin: 0;
+}
+
+/* Hiển thị con trỏ dạng bàn tay cho mọi nút bấm. */
+button {
+  /* Giúp người dùng nhận biết phần tử có thể bấm. */
+  cursor: pointer;
+}
+
+/* Vô hiệu hóa con trỏ bàn tay và giảm độ nổi bật cho nút đang bị khóa. */
+button:disabled {
+  /* Cho biết nút không thể bấm ở trạng thái hiện tại. */
+  cursor: not-allowed;
+  /* Giảm độ mờ để người dùng nhận biết nút đang bị vô hiệu hóa. */
+  opacity: 0.55;
+}
+
+/* Tạo viền rõ ràng khi người dùng điều hướng bằng bàn phím. */
+:focus-visible {
+  /* Viền màu xanh giúp xác định phần tử đang được chọn. */
+  outline: 3px solid rgba(37, 99, 235, 0.45);
+  /* Tách viền khỏi phần tử một khoảng nhỏ để dễ nhìn. */
+  outline-offset: 2px;
+}
+
+/* Liên kết bỏ qua điều hướng, mặc định bị đẩy ra ngoài màn hình. */
+.skip-link {
+  /* Đặt liên kết ở vị trí cố định để không ảnh hưởng bố cục. */
+  position: fixed;
+  /* Đặt sát mép trên màn hình. */
+  top: 0;
+  /* Đặt sát mép trái màn hình. */
+  left: 0;
+  /* Đẩy liên kết ra khỏi vùng nhìn thấy. */
+  transform: translateY(-120%);
+  /* Màu nền nổi bật để dễ nhận ra khi xuất hiện. */
+  background: var(--color-primary);
+  /* Màu chữ trắng tương phản với nền xanh. */
+  color: #ffffff;
+  /* Khoảng đệm giúp liên kết dễ bấm. */
+  padding: 0.75rem 1rem;
+  /* Bo góc dưới bên phải cho mềm mại. */
+  border-radius: 0 0 var(--radius-md) 0;
+  /* Đặt trên các phần tử khác khi được hiển thị. */
+  z-index: 100;
+  /* Tạo hiệu ứng trượt mượt. */
+  transition: transform 0.2s ease;
+}
+
+/* Khi liên kết được focus bằng bàn phím, trượt xuống để hiển thị. */
+.skip-link:focus {
+  /* Đưa liên kết trở lại vị trí nhìn thấy. */
+  transform: translateY(0);
+}
+
+/* Khung bao ngoài giới hạn chiều rộng nội dung và căn giữa trang. */
+.app-shell {
+  /* Giới hạn chiều rộng tối đa để nội dung không quá dài trên màn hình lớn. */
+  width: min(1240px, 100%);
+  /* Căn giữa khung theo chiều ngang. */
+  margin: 0 auto;
+  /* Thêm khoảng đệm xung quanh nội dung. */
+  padding: 2.5rem 1.5rem 1.5rem;
+}
+
+/* Bố cục phần đầu trang gồm nội dung giới thiệu và thẻ trạng thái. */
+.page-header {
+  /* Sắp xếp hai nhóm nội dung theo hàng ngang. */
+  display: flex;
+  /* Căn hai nhóm về hai phía. */
+  justify-content: space-between;
+  /* Căn các phần tử theo trục dọc. */
+  align-items: flex-start;
+  /* Tạo khoảng cách giữa hai nhóm. */
+  gap: 1.5rem;
+  /* Thêm khoảng cách phía dưới trước khu vực nội dung chính. */
+  margin-bottom: 2rem;
+}
+
+/* Giới hạn chiều rộng phần giới thiệu để dòng chữ dễ đọc. */
+.header-content {
+  /* Cho phép co giãn nhưng không vượt quá 720px. */
+  max-width: 720px;
+}
+
+/* Kiểu chữ cho dòng nhãn nhỏ phía trên tiêu đề. */
+.eyebrow {
+  /* Dùng chữ in hoa để tạo điểm nhấn. */
+  text-transform: uppercase;
+  /* Giảm kích thước chữ so với nội dung thường. */
+  font-size: 0.76rem;
+  /* Tăng khoảng cách giữa các chữ cái. */
+  letter-spacing: 0.16em;
+  /* Tô màu nhấn chính cho nhãn. */
+  color: var(--color-primary);
+  /* In đậm nhãn để dễ nhận biết. */
+  font-weight: 700;
+  /* Thêm khoảng cách phía dưới nhãn. */
+  margin-bottom: 0.5rem;
+}
+
+/* Kiểu chữ cho tiêu đề chính của trang. */
+h1 {
+  /* Kích thước chữ lớn, co giãn theo chiều rộng màn hình. */
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  /* Giảm khoảng cách dòng cho tiêu đề lớn. */
+  line-height: 1.15;
+  /* Giảm khoảng cách giữa các chữ cái để tiêu đề gọn hơn. */
+  letter-spacing: -0.03em;
+}
+
+/* Kiểu chữ cho mô tả phụ dưới tiêu đề. */
+.subtitle {
+  /* Màu chữ nhạt hơn để phân cấp thông tin. */
+  color: var(--color-muted);
+  /* Giới hạn chiều rộng để dòng chữ không quá dài. */
+  max-width: 62ch;
+  /* Thêm khoảng cách phía trên. */
+  margin-top: 0.75rem;
+  /* Kích thước chữ dễ đọc. */
+  font-size: 1rem;
+}
+
+/* Thẻ hiển thị số lượng sản phẩm và trạng thái đồng bộ. */
+.status-card {
+  /* Sắp xếp nội dung theo chiều dọc. */
+  display: flex;
+  /* Xếp các phần tử thành cột. */
+  flex-direction: column;
+  /* Căn nội dung sang trái. */
+  align-items: flex-start;
+  /* Chiều rộng tối thiểu để thẻ không quá nhỏ. */
+  min-width: 220px;
+  /* Khoảng đệm bên trong thẻ. */
+  padding: 1.1rem 1.25rem;
+  /* Nền trắng cho thẻ. */
+  background: var(--color-surface);
+  /* Viền nhẹ tách thẻ khỏi nền. */
+  border: 1px solid var(--color-border);
+  /* Bo góc thẻ. */
+  border-radius: var(--radius-lg);
+  /* Đổ bóng nhẹ tạo chiều sâu. */
+  box-shadow: var(--shadow-soft);
+}
+
+/* Nhãn mô tả chỉ số trong thẻ trạng thái. */
+.status-label {
+  /* Chữ nhỏ hơn nội dung thường. */
+  font-size: 0.8rem;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+  /* In đậm vừa phải. */
+  font-weight: 600;
+}
+
+/* Con số lớn trong thẻ trạng thái. */
+.status-value {
+  /* Kích thước lớn để dễ đọc nhanh. */
+  font-size: 2rem;
+  /* Giảm khoảng cách dòng. */
+  line-height: 1.1;
+  /* Màu nhấn chính. */
+  color: var(--color-primary);
+  /* Thêm khoảng cách nhỏ phía trên. */
+  margin-top: 0.15rem;
+}
+
+/* Dòng ghi chú trạng thái đồng bộ. */
+.status-note {
+  /* Chữ nhỏ. */
+  font-size: 0.78rem;
+  /* Màu xanh thể hiện trạng thái tốt. */
+  color: var(--color-success);
+  /* Thêm khoảng cách phía trên. */
+  margin-top: 0.25rem;
+}
+
+/* Khi đang tải, đổi màu ghi chú sang màu cảnh báo. */
+.status-note.is-loading {
+  /* Màu vàng cam cho trạng thái đang xử lý. */
+  color: var(--color-warning);
+}
+
+/* Bố cục chính gồm cột biểu mẫu và cột bảng dữ liệu. */
+.layout {
+  /* Sử dụng CSS Grid để chia hai cột. */
+  display: grid;
+  /* Cột biểu mẫu rộng cố định, cột bảng chiếm phần còn lại. */
+  grid-template-columns: 370px minmax(0, 1fr);
+  /* Khoảng cách giữa hai cột. */
+  gap: 1.5rem;
+  /* Căn các cột theo mép trên. */
+  align-items: start;
+}
+
+/* Khối nội dung chung cho biểu mẫu và bảng. */
+.panel {
+  /* Nền trắng cho khối nội dung. */
+  background: var(--color-surface);
+  /* Viền nhẹ tách khối khỏi nền trang. */
+  border: 1px solid var(--color-border);
+  /* Bo góc lớn cho khối. */
+  border-radius: var(--radius-lg);
+  /* Đổ bóng nhẹ tạo chiều sâu. */
+  box-shadow: var(--shadow-soft);
+  /* Khoảng đệm bên trong khối. */
+  padding: 1.5rem;
+}
+
+/* Giữ biểu mẫu luôn ở vị trí dễ thấy khi cuộn bảng dài. */
+.form-panel {
+  /* Dính biểu mẫu vào đầu vùng nhìn thấy trên màn hình lớn. */
+  position: sticky;
+  /* Khoảng cách từ mép trên khi cuộn. */
+  top: 1.5rem;
+}
+
+/* Phần tiêu đề chung của panel. */
+.panel-heading {
+  /* Thêm khoảng cách phía dưới trước nội dung chính. */
+  margin-bottom: 1.25rem;
+}
+
+/* Tiêu đề cấp hai bên trong panel. */
+.panel-heading h2 {
+  /* Kích thước chữ vừa phải, nổi bật hơn nội dung thường. */
+  font-size: 1.25rem;
+  /* Giảm khoảng cách dòng cho tiêu đề. */
+  line-height: 1.25;
+  /* Giảm khoảng cách giữa các chữ cái. */
+  letter-spacing: -0.02em;
+}
+
+/* Mô tả ngắn dưới tiêu đề panel. */
+.panel-description {
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+  /* Kích thước chữ nhỏ hơn nội dung thường. */
+  font-size: 0.88rem;
+  /* Thêm khoảng cách phía trên. */
+  margin-top: 0.35rem;
+}
+
+/* Sắp xếp các trường của biểu mẫu theo chiều dọc. */
+.product-form {
+  /* Dùng flex để kiểm soát khoảng cách giữa các trường. */
+  display: flex;
+  /* Xếp các trường thành cột. */
+  flex-direction: column;
+  /* Khoảng cách giữa các trường. */
+  gap: 1rem;
+}
+
+/* Nhóm một nhãn và một ô nhập. */
+.field {
+  /* Sắp xếp nhãn, ô nhập và gợi ý theo chiều dọc. */
+  display: flex;
+  /* Xếp thành cột. */
+  flex-direction: column;
+  /* Khoảng cách nhỏ giữa các phần tử trong trường. */
+  gap: 0.4rem;
+}
+
+/* Nhãn của ô nhập. */
+.field label {
+  /* Chữ đậm vừa phải để dễ nhận biết. */
+  font-weight: 600;
+  /* Kích thước chữ nhỏ hơn nội dung thường. */
+  font-size: 0.9rem;
+}
+
+/* Kiểu dáng chung cho ô nhập văn bản và ô nhập số. */
+.field input {
+  /* Chiếm toàn bộ chiều rộng của trường. */
+  width: 100%;
+  /* Khoảng đệm bên trong ô nhập. */
+  padding: 0.7rem 0.85rem;
+  /* Viền nhẹ cho ô nhập. */
+  border: 1px solid var(--color-border);
+  /* Bo góc ô nhập. */
+  border-radius: var(--radius-md);
+  /* Nền trắng cho ô nhập. */
+  background: #fbfcfe;
+  /* Màu chữ chính. */
+  color: var(--color-text);
+  /* Tạo hiệu ứng chuyển màu mượt khi focus. */
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+/* Trạng thái khi rê chuột lên ô nhập. */
+.field input:hover {
+  /* Đậm viền hơn một chút để tạo phản hồi. */
+  border-color: #b9c6dd;
+}
+
+/* Trạng thái khi ô nhập được focus. */
+.field input:focus {
+  /* Đổi viền sang màu nhấn chính. */
+  border-color: var(--color-primary);
+  /* Nền trắng hoàn toàn khi đang nhập. */
+  background: #ffffff;
+  /* Thêm quầng sáng xanh để làm nổi bật ô đang nhập. */
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  /* Bỏ đường viền focus mặc định của trình duyệt. */
+  outline: none;
+}
+
+/* Trạng thái ô nhập bị vô hiệu hóa trong lúc gửi dữ liệu. */
+.field input:disabled {
+  /* Nền xám nhạt cho biết không thể nhập. */
+  background: #f1f4f9;
+  /* Giảm độ tương phản chữ. */
+  color: var(--color-muted);
+  /* Con trỏ cho biết ô đang bị khóa. */
+  cursor: not-allowed;
+}
+
+/* Gợi ý nhỏ dưới mỗi ô nhập. */
+.field-hint {
+  /* Chữ nhỏ hơn. */
+  font-size: 0.78rem;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+}
+
+/* Ghi chú chung của biểu mẫu. */
+.form-note {
+  /* Kích thước chữ nhỏ. */
+  font-size: 0.8rem;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+  /* Nền xanh rất nhạt để tách ghi chú khỏi các trường. */
+  background: var(--color-primary-soft);
+  /* Viền trái màu nhấn để tạo điểm nhấn. */
+  border-left: 3px solid var(--color-primary);
+  /* Bo góc nhẹ. */
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  /* Khoảng đệm trong ghi chú. */
+  padding: 0.6rem 0.75rem;
+}
+
+/* Nhóm các nút thao tác của biểu mẫu. */
+.form-actions {
+  /* Sắp xếp các nút theo hàng ngang. */
+  display: flex;
+  /* Cho phép xuống dòng khi thiếu chỗ. */
+  flex-wrap: wrap;
+  /* Khoảng cách giữa các nút. */
+  gap: 0.6rem;
+  /* Thêm khoảng cách phía trên. */
+  margin-top: 0.25rem;
+}
+
+/* Kiểu dáng chung cho tất cả nút bấm. */
+.btn {
+  /* Sắp xếp nội dung bên trong nút theo hàng ngang. */
+  display: inline-flex;
+  /* Căn giữa nội dung theo cả hai trục. */
+  align-items: center;
+  /* Căn giữa nội dung theo chiều ngang. */
+  justify-content: center;
+  /* Khoảng đệm của nút. */
+  padding: 0.65rem 1rem;
+  /* Viền trong suốt để các biến thể dễ ghi đè. */
+  border: 1px solid transparent;
+  /* Bo góc nút. */
+  border-radius: var(--radius-md);
+  /* Chữ đậm vừa phải. */
+  font-weight: 600;
+  /* Kích thước chữ nhỏ hơn nội dung thường. */
+  font-size: 0.9rem;
+  /* Bỏ gạch chân mặc định nếu nút là thẻ liên kết. */
+  text-decoration: none;
+  /* Tạo hiệu ứng chuyển màu mượt. */
+  transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+/* Hiệu ứng nhấn nhẹ khi bấm nút. */
+.btn:not(:disabled):active {
+  /* Dịch nút xuống 1px để tạo cảm giác được nhấn. */
+  transform: translateY(1px);
+}
+
+/* Nút chính dùng cho thao tác lưu. */
+.btn-primary {
+  /* Nền màu nhấn chính. */
+  background: var(--color-primary);
+  /* Chữ trắng tương phản. */
+  color: #ffffff;
+  /* Đổ bóng màu xanh nhẹ. */
+  box-shadow: var(--shadow-button);
+}
+
+/* Trạng thái rê chuột lên nút chính. */
+.btn-primary:not(:disabled):hover {
+  /* Dùng màu xanh đậm hơn khi rê chuột. */
+  background: var(--color-primary-dark);
+}
+
+/* Nút phụ dùng cho thao tác sửa và hủy. */
+.btn-secondary {
+  /* Nền trắng. */
+  background: #ffffff;
+  /* Viền xanh nhạt. */
+  border-color: #c7d5f3;
+  /* Chữ màu nhấn chính. */
+  color: var(--color-primary-dark);
+}
+
+/* Trạng thái rê chuột lên nút phụ. */
+.btn-secondary:not(:disabled):hover {
+  /* Nền xanh rất nhạt khi rê chuột. */
+  background: var(--color-primary-soft);
+  /* Viền xanh đậm hơn. */
+  border-color: var(--color-primary);
+}
+
+/* Nút nguy hiểm dùng cho thao tác xóa. */
+.btn-danger {
+  /* Nền đỏ nhạt. */
+  background: var(--color-danger-bg);
+  /* Viền đỏ nhạt. */
+  border-color: #f5c6c1;
+  /* Chữ đỏ đậm. */
+  color: var(--color-danger);
+}
+
+/* Trạng thái rê chuột lên nút xóa. */
+.btn-danger:not(:disabled):hover {
+  /* Nền đỏ đậm hơn khi rê chuột. */
+  background: #fbd5d1;
+  /* Viền đỏ đậm hơn. */
+  border-color: var(--color-danger);
+}
+
+/* Nút dạng trong suốt dùng cho thao tác làm mới. */
+.btn-ghost {
+  /* Nền trong suốt để hòa vào panel. */
+  background: transparent;
+  /* Viền nhẹ. */
+  border-color: var(--color-border);
+  /* Chữ màu nhấn chính. */
+  color: var(--color-primary);
+}
+
+/* Trạng thái rê chuột lên nút làm mới. */
+.btn-ghost:not(:disabled):hover {
+  /* Nền xanh rất nhạt. */
+  background: var(--color-primary-soft);
+  /* Viền xanh nhạt. */
+  border-color: #c7d5f3;
+}
+
+/* Nút kích thước nhỏ dùng trong bảng. */
+.btn-small {
+  /* Giảm khoảng đệm so với nút thường. */
+  padding: 0.4rem 0.7rem;
+  /* Chữ nhỏ hơn. */
+  font-size: 0.8rem;
+  /* Bo góc nhỏ hơn một chút. */
+  border-radius: 9px;
+}
+
+/* Tạo khoảng cách giữa hai nút nằm cạnh nhau trong cùng một ô bảng. */
+td .btn + .btn {
+  /* Dịch nút thứ hai sang phải để không dính nút đầu. */
+  margin-left: 0.4rem;
+}
+
+/* Phần tiêu đề của bảng có thêm nút làm mới. */
+.table-heading {
+  /* Sắp xếp tiêu đề và nút theo hàng ngang. */
+  display: flex;
+  /* Căn hai phía. */
+  justify-content: space-between;
+  /* Căn theo trục dọc. */
+  align-items: flex-start;
+  /* Khoảng cách giữa hai nhóm. */
+  gap: 1rem;
+}
+
+/* Hàng thống kê nhanh phía trên bảng. */
+.stats-row {
+  /* Sắp xếp các thẻ thống kê theo hàng ngang. */
+  display: flex;
+  /* Cho phép xuống dòng khi màn hình hẹp. */
+  flex-wrap: wrap;
+  /* Khoảng cách giữa các thẻ. */
+  gap: 0.75rem;
+  /* Thêm khoảng cách phía dưới. */
+  margin-bottom: 1rem;
+}
+
+/* Một thẻ thống kê nhỏ. */
+.stat-chip {
+  /* Sắp xếp nhãn và giá trị theo chiều dọc. */
+  display: flex;
+  /* Xếp thành cột. */
+  flex-direction: column;
+  /* Khoảng đệm trong thẻ. */
+  padding: 0.55rem 0.85rem;
+  /* Nền xám xanh rất nhạt. */
+  background: #f7f9fd;
+  /* Viền nhẹ. */
+  border: 1px solid var(--color-border);
+  /* Bo góc thẻ. */
+  border-radius: var(--radius-md);
+  /* Chiều rộng tối thiểu để hai thẻ cân đối. */
+  min-width: 150px;
+}
+
+/* Nhãn nhỏ của thẻ thống kê. */
+.stat-chip span {
+  /* Chữ nhỏ. */
+  font-size: 0.75rem;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+}
+
+/* Giá trị của thẻ thống kê. */
+.stat-chip strong {
+  /* Kích thước chữ lớn hơn một chút. */
+  font-size: 1rem;
+  /* Màu chữ chính. */
+  color: var(--color-text);
+}
+
+/* Kiểu dáng chung cho các hộp thông báo. */
+.alert {
+  /* Sắp xếp nội dung và nút đóng theo hàng ngang. */
+  display: flex;
+  /* Căn hai phía. */
+  justify-content: space-between;
+  /* Căn theo trục dọc. */
+  align-items: flex-start;
+  /* Khoảng cách giữa nội dung và nút đóng. */
+  gap: 0.75rem;
+  /* Khoảng đệm trong hộp. */
+  padding: 0.8rem 0.9rem;
+  /* Bo góc hộp. */
+  border-radius: var(--radius-md);
+  /* Viền mặc định trong suốt, biến thể sẽ ghi đè. */
+  border: 1px solid transparent;
+  /* Chữ nhỏ hơn nội dung thường. */
+  font-size: 0.88rem;
+  /* Thêm khoảng cách phía dưới. */
+  margin-bottom: 1rem;
+}
+
+/* Hộp thông báo lỗi. */
+.alert-error {
+  /* Nền đỏ nhạt. */
+  background: var(--color-danger-bg);
+  /* Viền đỏ nhạt. */
+  border-color: #f5c6c1;
+  /* Chữ đỏ đậm. */
+  color: var(--color-danger);
+}
+
+/* Hộp thông báo thành công. */
+.alert-success {
+  /* Nền xanh nhạt. */
+  background: var(--color-success-bg);
+  /* Viền xanh nhạt. */
+  border-color: #b6e7cd;
+  /* Chữ xanh đậm. */
+  color: var(--color-success);
+}
+
+/* Nút đóng thông báo. */
+.alert-close {
+  /* Bỏ nền mặc định của nút. */
+  background: transparent;
+  /* Bỏ viền mặc định của nút. */
+  border: none;
+  /* Kế thừa màu chữ của hộp thông báo. */
+  color: inherit;
+  /* Kích thước chữ lớn để dễ bấm. */
+  font-size: 1.2rem;
+  /* Giảm khoảng cách dòng để nút không quá cao. */
+  line-height: 1;
+  /* Khoảng đệm nhỏ để tăng vùng bấm. */
+  padding: 0.1rem 0.25rem;
+  /* Bo góc nhẹ. */
+  border-radius: 6px;
+}
+
+/* Trạng thái rê chuột lên nút đóng thông báo. */
+.alert-close:hover {
+  /* Nền bán trong suốt để tạo phản hồi. */
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Khung hiển thị trạng thái đang tải hoặc danh sách rỗng. */
+.state-box {
+  /* Sắp xếp nội dung theo chiều dọc. */
+  display: flex;
+  /* Xếp thành cột. */
+  flex-direction: column;
+  /* Căn giữa theo chiều ngang. */
+  align-items: center;
+  /* Căn giữa nội dung theo chiều dọc. */
+  justify-content: center;
+  /* Khoảng cách giữa các phần tử. */
+  gap: 0.75rem;
+  /* Chiều cao tối thiểu để khung không quá thấp. */
+  min-height: 220px;
+  /* Khoảng đệm trong khung. */
+  padding: 1.5rem;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+  /* Căn giữa văn bản. */
+  text-align: center;
+  /* Nền xám rất nhạt. */
+  background: #fafbfe;
+  /* Viền đứt nét thể hiện vùng trống. */
+  border: 1px dashed var(--color-border);
+  /* Bo góc khung. */
+  border-radius: var(--radius-md);
+}
+
+/* Biểu tượng minh họa cho trạng thái rỗng. */
+.empty-icon {
+  /* Kích thước lớn để dễ nhìn. */
+  font-size: 2rem;
+  /* Giảm khoảng cách dòng. */
+  line-height: 1;
+}
+
+/* Vòng xoay hiển thị khi đang tải dữ liệu. */
+.spinner {
+  /* Kích thước vòng xoay. */
+  width: 28px;
+  /* Chiều cao bằng chiều rộng để tạo hình tròn. */
+  height: 28px;
+  /* Viền xám nhạt làm nền vòng tròn. */
+  border: 3px solid #dbe3f1;
+  /* Một cạnh viền màu xanh tạo hiệu ứng đang quay. */
+  border-top-color: var(--color-primary);
+  /* Bo tròn hoàn toàn. */
+  border-radius: 50%;
+  /* Gắn hoạt ảnh quay liên tục. */
+  animation: spin 0.8s linear infinite;
+}
+
+/* Định nghĩa hoạt ảnh xoay 360 độ. */
+@keyframes spin {
+  /* Trạng thái bắt đầu: chưa xoay. */
+  from {
+    /* Góc xoay bằng 0. */
+    transform: rotate(0deg);
+  }
+
+  /* Trạng thái kết thúc: xoay đủ một vòng. */
+  to {
+    /* Góc xoay 360 độ. */
+    transform: rotate(360deg);
+  }
+}
+
+/* Khung cuộn ngang cho bảng trên màn hình nhỏ. */
+.table-wrap {
+  /* Cho phép cuộn ngang khi bảng rộng hơn khung chứa. */
+  overflow-x: auto;
+  /* Bo góc khung để bảng trông liền mạch. */
+  border-radius: var(--radius-md);
+  /* Viền nhẹ bao quanh bảng. */
+  border: 1px solid var(--color-border);
+}
+
+/* Kiểu dáng chung cho bảng sản phẩm. */
+table {
+  /* Chiếm toàn bộ chiều rộng khung chứa. */
+  width: 100%;
+  /* Gộp đường viền các ô để bảng gọn hơn. */
+  border-collapse: collapse;
+  /* Cỡ chữ nhỏ hơn nội dung thường một chút. */
+  font-size: 0.9rem;
+  /* Ngăn bảng co lại quá mức trên màn hình nhỏ. */
+  min-width: 620px;
+}
+
+/* Phần đầu bảng. */
+thead {
+  /* Nền xám xanh nhạt để tách tiêu đề khỏi dữ liệu. */
+  background: #f6f8fd;
+}
+
+/* Ô tiêu đề của bảng. */
+th {
+  /* Căn trái mặc định cho dễ đọc. */
+  text-align: left;
+  /* Khoảng đệm trong ô. */
+  padding: 0.75rem 0.85rem;
+  /* Chữ đậm vừa phải. */
+  font-weight: 700;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+  /* Chữ nhỏ hơn dữ liệu. */
+  font-size: 0.78rem;
+  /* Chuyển tiêu đề thành chữ in hoa nhẹ. */
+  text-transform: uppercase;
+  /* Tăng khoảng cách chữ để dễ đọc. */
+  letter-spacing: 0.04em;
+  /* Viền dưới tách tiêu đề khỏi phần thân. */
+  border-bottom: 1px solid var(--color-border);
+  /* Giữ tiêu đề cố định khi cuộn dọc nếu bảng dài. */
+  white-space: nowrap;
+}
+
+/* Ô dữ liệu của bảng. */
+td {
+  /* Khoảng đệm trong ô. */
+  padding: 0.8rem 0.85rem;
+  /* Viền dưới nhẹ giữa các dòng. */
+  border-bottom: 1px solid #eef2f8;
+  /* Căn theo mép trên để nội dung nhiều dòng vẫn đẹp. */
+  vertical-align: middle;
+}
+
+/* Bỏ viền dưới của dòng cuối cùng để bảng kết thúc gọn. */
+tbody tr:last-child td {
+  /* Loại bỏ đường viền thừa ở đáy bảng. */
+  border-bottom: none;
+}
+
+/* Hiệu ứng khi rê chuột lên một dòng dữ liệu. */
+tbody tr:hover {
+  /* Nền xanh rất nhạt giúp theo dõi dòng đang xem. */
+  background: #f8faff;
+}
+
+/* Làm nổi bật dòng sản phẩm đang được chỉnh sửa. */
+tbody tr.is-editing {
+  /* Nền xanh nhạt để phân biệt với các dòng khác. */
+  background: var(--color-primary-soft);
+  /* Viền trái màu nhấn đánh dấu dòng đang sửa. */
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+/* Căn phải nội dung của các cột số. */
+.align-right {
+  /* Đặt nội dung về bên phải. */
+  text-align: right;
+}
+
+/* Căn giữa nội dung của cột trạng thái. */
+.align-center {
+  /* Đặt nội dung ở giữa ô. */
+  text-align: center;
+}
+
+/* Mã sản phẩm trong bảng. */
+.id-cell {
+  /* Màu chữ phụ để không lấn át tên sản phẩm. */
+  color: var(--color-muted);
+  /* Chữ nhỏ hơn. */
+  font-size: 0.8rem;
+  /* Giữ mã sản phẩm trên một dòng. */
+  white-space: nowrap;
+}
+
+/* Tên sản phẩm trong bảng. */
+.name-cell {
+  /* Chữ đậm vừa phải để dễ nhận biết. */
+  font-weight: 600;
+  /* Cho phép xuống dòng nếu tên dài. */
+  word-break: break-word;
+}
+
+/* Đơn giá trong bảng. */
+.money-cell {
+  /* Dùng chữ số có khoảng cách đều để dễ so sánh. */
+  font-variant-numeric: tabular-nums;
+  /* Giữ đơn giá trên một dòng. */
+  white-space: nowrap;
+  /* Chữ đậm vừa phải. */
+  font-weight: 600;
+}
+
+/* Nhãn trạng thái tồn kho. */
+.stock-badge {
+  /* Hiển thị nhãn theo dạng khối nội tuyến để giữ kích thước vừa nội dung. */
+  display: inline-flex;
+  /* Xếp số lượng và chú thích theo chiều dọc. */
+  flex-direction: column;
+  /* Căn giữa nội dung. */
+  align-items: center;
+  /* Khoảng đệm nhỏ. */
+  padding: 0.25rem 0.55rem;
+  /* Bo tròn hoàn toàn. */
+  border-radius: var(--radius-sm);
+  /* Chữ đậm vừa phải. */
+  font-weight: 700;
+  /* Kích thước chữ nhỏ. */
+  font-size: 0.78rem;
+  /* Giữ nhãn trên một dòng. */
+  white-space: nowrap;
+  /* Chiều rộng tối thiểu để các nhãn đều nhau. */
+  min-width: 72px;
+}
+
+/* Phần chú thích nhỏ bên trong nhãn tồn kho. */
+.stock-badge small {
+  /* Chữ rất nhỏ. */
+  font-size: 0.62rem;
+  /* Giảm độ đậm để phân cấp thông tin. */
+  font-weight: 600;
+  /* Giảm khoảng cách dòng. */
+  line-height: 1.2;
+}
+
+/* Nhãn cho sản phẩm còn hàng. */
+.stock-badge.in-stock {
+  /* Nền xanh nhạt. */
+  background: var(--color-success-bg);
+  /* Chữ xanh đậm. */
+  color: var(--color-success);
+}
+
+/* Nhãn cho sản phẩm đã hết hàng. */
+.stock-badge.out-of-stock {
+  /* Nền đỏ nhạt. */
+  background: var(--color-danger-bg);
+  /* Chữ đỏ đậm. */
+  color: var(--color-danger);
+}
+
+/* Chân trang. */
+.page-footer {
+  /* Sắp xếp hai dòng ghi chú theo hàng ngang. */
+  display: flex;
+  /* Căn hai phía. */
+  justify-content: space-between;
+  /* Cho phép xuống dòng trên màn hình nhỏ. */
+  flex-wrap: wrap;
+  /* Khoảng cách giữa hai dòng. */
+  gap: 0.5rem;
+  /* Thêm khoảng cách phía trên. */
+  margin-top: 1.5rem;
+  /* Khoảng đệm hai bên. */
+  padding: 0 0.25rem;
+  /* Chữ nhỏ. */
+  font-size: 0.78rem;
+  /* Màu chữ phụ. */
+  color: var(--color-muted);
+}
+
+/* Định dạng mã nguồn hiển thị trong văn bản. */
+code {
+  /* Dùng font chữ đơn cách để phân biệt với văn bản thường. */
+  font-family: "Cascadia Mono", "Consolas", "Courier New", monospace;
+  /* Chữ nhỏ hơn một chút. */
+  font-size: 0.88em;
+  /* Nền xám nhạt cho đoạn mã. */
+  background: #eef2f9;
+  /* Khoảng đệm nhỏ quanh đoạn mã. */
+  padding: 0.1rem 0.35rem;
+  /* Bo góc nhẹ. */
+  border-radius: 5px;
+}
+
+/* Lớp tiện ích ẩn nội dung trực quan nhưng vẫn đọc được bằng trình đọc màn hình. */
+.visually-hidden {
+  /* Đặt phần tử ở vị trí tuyệt đối để không chiếm chỗ trong bố cục. */
+  position: absolute;
+  /* Thu nhỏ phần tử xuống kích thước 1px. */
+  width: 1px;
+  /* Chiều cao 1px. */
+  height: 1px;
+  /* Khoảng đệm bằng 0. */
+  padding: 0;
+  /* Loại bỏ lề. */
+  margin: -1px;
+  /* Ẩn phần tràn ra ngoài. */
+  overflow: hidden;
+  /* Cắt nội dung vượt kích thước. */
+  clip: rect(0, 0, 0, 0);
+  /* Bỏ viền. */
+  border: 0;
+  /* Ngăn xuống dòng. */
+  white-space: nowrap;
+}
+
+/* Điều chỉnh bố cục khi màn hình hẹp hơn 980px. */
+@media (max-width: 980px) {
+  /* Chuyển bố cục chính thành một cột duy nhất. */
+  .layout {
+    /* Chỉ còn một cột chiếm toàn bộ chiều rộng. */
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Bỏ chế độ dính của biểu mẫu trên màn hình nhỏ. */
+  .form-panel {
+    /* Đưa biểu mẫu trở lại luồng bố cục bình thường. */
+    position: static;
+  }
+}
+
+/* Điều chỉnh giao diện khi màn hình hẹp hơn 720px. */
+@media (max-width: 720px) {
+  /* Giảm khoảng đệm tổng thể của trang. */
+  .app-shell {
+    /* Thu nhỏ khoảng đệm để tận dụng diện tích màn hình. */
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  /* Chuyển phần đầu trang thành cột dọc. */
+  .page-header {
+    /* Xếp nội dung giới thiệu và thẻ trạng thái theo chiều dọc. */
+    flex-direction: column;
+  }
+
+  /* Cho thẻ trạng thái chiếm toàn bộ chiều rộng trên di động. */
+  .status-card {
+    /* Kéo thẻ trạng thái rộng hết phần còn lại. */
+    width: 100%;
+  }
+
+  /* Giảm khoảng đệm của panel trên màn hình nhỏ. */
+  .panel {
+    /* Giảm khoảng đệm để nội dung rộng rãi hơn. */
+    padding: 1.15rem;
+  }
+
+  /* Chuyển tiêu đề bảng thành cột dọc để nút làm mới không bị chèn ép. */
+  .table-heading {
+    /* Xếp tiêu đề và nút theo chiều dọc. */
+    flex-direction: column;
+  }
+
+  /* Cho nút làm mới rộng toàn bộ trên màn hình nhỏ. */
+  .table-heading .btn {
+    /* Kéo nút rộng hết khung chứa. */
+    width: 100%;
+  }
+
+  /* Sắp xếp các nút thao tác của biểu mẫu theo chiều dọc. */
+  .form-actions {
+    /* Xếp các nút thành cột. */
+    flex-direction: column;
+  }
+
+  /* Cho các nút trong biểu mẫu rộng toàn bộ. */
+  .form-actions .btn {
+    /* Kéo nút rộng hết khung chứa để dễ bấm. */
+    width: 100%;
+  }
+
+  /* Chân trang chuyển thành một cột. */
+  .page-footer {
+    /* Xếp các dòng ghi chú theo chiều dọc. */
+    flex-direction: column;
+  }
+}
+
+/* Tôn trọng cài đặt giảm chuyển động của người dùng. */
+@media (prefers-reduced-motion: reduce) {
+  /* Loại bỏ hoạt ảnh xoay của vòng tải. */
+  .spinner {
+    /* Tắt hoạt ảnh để tránh gây khó chịu cho người nhạy cảm với chuyển động. */
+    animation: none;
+  }
+
+  /* Loại bỏ hiệu ứng chuyển màu trên nút và ô nhập. */
+  .btn,
+  .field input,
+  .skip-link {
+    /* Tắt chuyển động nhưng vẫn giữ thay đổi màu tức thời. */
+    transition: none;
+  }
+}
