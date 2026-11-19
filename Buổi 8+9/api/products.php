@@ -4,8 +4,8 @@
 // ----------------------------------------------------------------------------
 // Đường dẫn: api/products.php
 // Chức năng:
-//   GET    api/products.php        -> Lấy danh sách sản phẩm.
-//   POST   api/products.php        -> Thêm sản phẩm mới.
+//   GET    api/products.php?page=1&limit=5 -> Lấy danh sách sản phẩm có phân trang.
+//   POST   api/products.php        -> Thêm sản phẩm mới (trả kèm id để gọi api/upload.php).
 //   PUT    api/products.php?id=1   -> Cập nhật sản phẩm theo id.
 //   DELETE api/products.php?id=1   -> Xóa sản phẩm theo id.
 //
@@ -194,15 +194,83 @@ function layIdTuQuery(): int
 }
 
 /**
+ * Đọc và kiểm tra hai tham số phân trang `page` và `limit` trên URL của yêu cầu GET.
+ * Quy tắc của đề bài:
+ *   - Thiếu tham số thì mặc định page = 1 và limit = 5.
+ *   - page phải là số nguyên dương; limit nếu được gửi thì phải bằng đúng 5.
+ *   - Mọi giá trị sai định dạng đều trả lỗi 400 kèm thông báo cụ thể.
+ *
+ * @return array{page: int, limit: int} Bộ tham số phân trang đã được kiểm tra.
+ */
+function layThamSoPhanTrang(): array
+{
+    // Đọc giá trị page từ chuỗi truy vấn; null nghĩa là người dùng không gửi tham số này.
+    $pageTho = $_GET['page'] ?? null;
+
+    // Đọc giá trị limit từ chuỗi truy vấn; null nghĩa là người dùng không gửi tham số này.
+    $limitTho = $_GET['limit'] ?? null;
+
+    // Gán page mặc định bằng 1 để đáp ứng trường hợp thiếu tham số.
+    $page = 1;
+
+    // Gán limit mặc định bằng 5 để mỗi trang luôn có năm sản phẩm.
+    $limit = 5;
+
+    // Chỉ kiểm tra page khi người dùng thực sự gửi tham số trên URL.
+    if ($pageTho !== null) {
+        // Tham số phải là chuỗi gồm toàn chữ số; giá trị dạng mảng page[]=1 bị từ chối.
+        if (!is_string($pageTho) || preg_match('/^\d+$/', trim($pageTho)) !== 1) {
+            // Báo lỗi rõ ràng để giao diện hoặc người gọi API biết cách sửa.
+            traLoiLoi('page phải là một số nguyên dương.', 400);
+        }
+
+        // Ép chuỗi chữ số đã kiểm tra thành số nguyên để dùng trong phép tính OFFSET.
+        $page = (int) trim($pageTho);
+
+        // Loại bỏ page = 0 và các giá trị vượt quá giới hạn của cột INT MySQL.
+        if ($page < 1 || $page > GIA_TRI_INT_TOI_DA) {
+            // Thông báo kèm phạm vi hợp lệ để người dùng dễ điều chỉnh.
+            traLoiLoi('page phải nằm trong khoảng từ 1 đến ' . GIA_TRI_INT_TOI_DA . '.', 400);
+        }
+    }
+
+    // Chỉ kiểm tra limit khi người dùng thực sự gửi tham số trên URL.
+    if ($limitTho !== null) {
+        // Tham số phải là chuỗi gồm toàn chữ số; giá trị dạng mảng limit[]=5 bị từ chối.
+        if (!is_string($limitTho) || preg_match('/^\d+$/', trim($limitTho)) !== 1) {
+            // Báo lỗi vì limit không phải số nguyên dương hợp lệ.
+            traLoiLoi('limit phải là một số nguyên dương.', 400);
+        }
+
+        // Ép chuỗi chữ số đã kiểm tra thành số nguyên để so sánh với giá trị quy định.
+        $limit = (int) trim($limitTho);
+
+        // Đề bài cố định năm sản phẩm mỗi trang nên mọi giá trị khác 5 đều là sai.
+        if ($limit !== 5) {
+            // Trả lỗi 400 thay vì âm thầm đổi limit để tránh hiểu nhầm về kết quả.
+            traLoiLoi('limit chỉ được phép bằng 5.', 400);
+        }
+    }
+
+    // Trả về bộ tham số đã hợp lệ cho hàm lấy danh sách sử dụng.
+    return [
+        // Trang được yêu cầu hoặc trang mặc định.
+        'page' => $page,
+        // Số bản ghi mỗi trang, luôn bằng 5.
+        'limit' => $limit,
+    ];
+}
+
+/**
  * Chuyển đổi một dòng dữ liệu thô từ MySQL thành mảng có kiểu số rõ ràng.
  * PDO có thể trả các cột INT dưới dạng chuỗi, nên cần ép kiểu để JSON đúng kiểu.
  *
  * @param array<string, mixed> $dong Một dòng sản phẩm lấy từ cơ sở dữ liệu.
- * @return array{id: int, name: string, price: int, stock: int} Sản phẩm đã chuẩn hóa.
+ * @return array{id: int, name: string, price: int, stock: int, image: string} Sản phẩm đã chuẩn hóa.
  */
 function chuanHoaSanPham(array $dong): array
 {
-    // Trả về mảng mới với đúng bốn trường và đúng kiểu dữ liệu mà giao diện cần.
+    // Trả về mảng mới với đúng năm trường và đúng kiểu dữ liệu mà giao diện cần.
     return [
         // Mã sản phẩm luôn là số nguyên.
         'id' => (int) $dong['id'],
@@ -212,6 +280,8 @@ function chuanHoaSanPham(array $dong): array
         'price' => (int) $dong['price'],
         // Số lượng tồn luôn là số nguyên không âm.
         'stock' => (int) $dong['stock'],
+        // Đường dẫn ảnh; chuỗi rỗng nghĩa là sản phẩm chưa có ảnh.
+        'image' => (string) ($dong['image'] ?? ''),
     ];
 }
 
@@ -343,30 +413,74 @@ function kiemTraDuLieuSanPham(array $duLieu): array
 // ----------------------------------------------------------------------------
 
 /**
- * Xử lý GET: lấy toàn bộ danh sách sản phẩm và trả về trong trường `data`.
+ * Xử lý GET: đếm tổng sản phẩm rồi lấy đúng một trang dữ liệu theo page/limit.
+ * Kết quả trả về gồm success, data và pagination để giao diện dựng nút chuyển trang.
  *
- * @param PDO $pdo Kết nối cơ sở dữ liệu đang mở.
- * @return never   Luôn kết thúc bằng một phản hồi JSON.
+ * @param PDO $pdo   Kết nối cơ sở dữ liệu đang mở.
+ * @param int $page  Trang được yêu cầu (đã kiểm tra ở layThamSoPhanTrang).
+ * @param int $limit Số sản phẩm mỗi trang, luôn bằng 5.
+ * @return never     Luôn kết thúc bằng một phản hồi JSON.
  */
-function xuLyLayDanhSach(PDO $pdo): never
+function xuLyLayDanhSach(PDO $pdo, int $page, int $limit): never
 {
-    // Bọc truy vấn trong try/catch để chuyển lỗi SQL thành phản hõi JSON an toàn.
+    // Bọc truy vấn trong try/catch để chuyển lỗi SQL thành phản hồi JSON an toàn.
     try {
-        // Chuẩn bị câu lệnh SELECT chỉ lấy các cột cần thiết, sắp xếp theo id tăng dần.
-        $cauLenh = $pdo->query('SELECT id, name, price, stock FROM products ORDER BY id ASC');
+        // Đếm tổng số bản ghi trong bảng để biết tổng số sản phẩm và số trang.
+        $cauLenhDem = $pdo->query('SELECT COUNT(*) FROM products');
 
-        // Lấy tất cả các dòng kết quả dưới dạng mảng kết hợp.
+        // fetchColumn lấy trực tiếp giá trị của cột COUNT(*) dưới dạng chuỗi, rồi ép sang int.
+        $tong = (int) $cauLenhDem->fetchColumn();
+
+        // Tính tổng số trang: chia trần tổng cho limit, làm tròn lên bằng ceil.
+        // max(1, ...) bảo đảm danh sách rỗng vẫn có ít nhất một trang hợp lệ.
+        $tongTrang = max(1, (int) ceil($tong / $limit));
+
+        // Nếu trang yêu cầu vượt trang cuối thì dùng trang cuối thực tế thay vì trả mảng rỗng.
+        if ($page > $tongTrang) {
+            // Gán lại page bằng tổng số trang để cả dữ liệu lẫn phản hồi đều nhất quán.
+            $page = $tongTrang;
+        }
+
+        // Tính OFFSET: bỏ qua (page - 1) trang phía trước, mỗi trang có limit bản ghi.
+        $offset = ($page - 1) * $limit;
+
+        // Chuẩn bị câu lệnh lấy dữ liệu, sắp xếp id giảm dần và giới hạn bằng LIMIT/OFFSET.
+        $cauLenh = $pdo->prepare(
+            'SELECT id, name, price, stock, image FROM products ORDER BY id DESC LIMIT :limit OFFSET :offset'
+        );
+
+        // Gán số bản ghi mỗi trang vào tham số :limit với kiểu số nguyên.
+        $cauLenh->bindValue(':limit', $limit, PDO::PARAM_INT);
+
+        // Gán vị trí bắt đầu vào tham số :offset với kiểu số nguyên.
+        $cauLenh->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+        // Thực thi truy vấn để lấy đúng các dòng thuộc trang hiện tại.
+        $cauLenh->execute();
+
+        // Lấy toàn bộ dòng kết quả của trang dưới dạng mảng kết hợp.
         $cacDong = $cauLenh->fetchAll();
 
-        // Chuẩn hóa từng dòng để id, price, stock luôn là số nguyên trong JSON.
+        // Chuẩn hóa từng dòng để id, price, stock là số nguyên và image là chuỗi đường dẫn.
         $danhSach = array_map('chuanHoaSanPham', $cacDong);
 
-        // Trả về thành công kèm mảng sản phẩm trong trường data theo đúng yêu cầu.
+        // Trả về thành công kèm dữ liệu và thông tin phân trang theo đúng cấu trúc đề bài.
         traLoiJson([
             // Đánh dấu thao tác lấy danh sách thành công.
             'success' => true,
-            // Trường data chứa mảng sản phẩm cho giao diện Vue hiển thị bằng v-for.
+            // Trường data chứa mảng tối đa năm sản phẩm của trang hiện tại.
             'data' => $danhSach,
+            // Trường pagination mô tả trạng thái phân trang cho giao diện Vue.
+            'pagination' => [
+                // Trang thực tế sau khi đã xử lý trường hợp vượt trang cuối.
+                'page' => $page,
+                // Số sản phẩm trên mỗi trang (luôn là 5).
+                'limit' => $limit,
+                // Tổng số sản phẩm trong toàn bộ bảng, không phải số dòng của riêng trang này.
+                'total' => $tong,
+                // Tổng số trang, tối thiểu bằng 1 kể cả khi không có sản phẩm.
+                'total_pages' => $tongTrang,
+            ],
         ], 200);
     } catch (PDOException $loi) {
         // Ghi chi tiết lỗi vào log máy chủ để người phát triển điều tra.
@@ -421,15 +535,19 @@ function xuLyThemSanPham(PDO $pdo): never
             'price' => $duLieu['price'],
             // Số lượng tồn đã được kiểm tra.
             'stock' => $duLieu['stock'],
+            // Ảnh chưa được tải lên nên ban đầu để chuỗi rỗng.
+            'image' => '',
         ];
 
         // Trả về mã 201 Created cùng thông báo và dữ liệu sản phẩm vừa tạo.
         traLoiJson([
             // Đánh dấu thao tác thêm thành công.
             'success' => true,
+            // Trả mã sản phẩm mới ở cấp cao nhất để Vue dễ dùng khi gọi api/upload.php.
+            'id' => $idMoi,
             // Thông báo hiển thị trên giao diện.
             'message' => 'Thêm sản phẩm thành công.',
-            // Trả về sản phẩm mới để phía giao diện có thể dùng ngay nếu cần.
+            // Trả về sản phẩm mới trong data.id theo đúng quy ước cũ của API.
             'data' => $sanPhamMoi,
         ], 201);
     } catch (PDOException $loi) {
@@ -457,8 +575,8 @@ function xuLyCapNhatSanPham(PDO $pdo): never
 
     // Bọc các truy vấn trong try/catch để xử lý lỗi SQL.
     try {
-        // Chuẩn bị câu lệnh kiểm tra sản phẩm có tồn tại hay không.
-        $cauLenhKiemTra = $pdo->prepare('SELECT id FROM products WHERE id = :id LIMIT 1');
+        // Chuẩn bị câu lệnh kiểm tra sản phẩm có tồn tại và lấy luôn đường dẫn ảnh hiện tại.
+        $cauLenhKiemTra = $pdo->prepare('SELECT id, image FROM products WHERE id = :id LIMIT 1');
 
         // Gán id vào tham số :id với kiểu số nguyên.
         $cauLenhKiemTra->bindValue(':id', $id, PDO::PARAM_INT);
@@ -474,6 +592,9 @@ function xuLyCapNhatSanPham(PDO $pdo): never
             // Thông báo rõ id không tồn tại để người dùng biết.
             traLoiLoi('Không tìm thấy sản phẩm có id = ' . $id . '.', 404);
         }
+
+        // Lưu đường dẫn ảnh cũ; câu lệnh UPDATE bên dưới không đụng đến cột image nên ảnh được giữ nguyên.
+        $anhHienTai = (string) ($ketQua['image'] ?? '');
 
         // Chuẩn bị câu lệnh UPDATE ba trường name, price, stock theo id.
         $cauLenhCapNhat = $pdo->prepare(
@@ -511,6 +632,8 @@ function xuLyCapNhatSanPham(PDO $pdo): never
                 'price' => $duLieu['price'],
                 // Số lượng tồn mới sau khi cập nhật.
                 'stock' => $duLieu['stock'],
+                // Đường dẫn ảnh hiện tại không bị thay đổi vì PUT chỉ cập nhật ba trường thông tin.
+                'image' => $anhHienTai,
             ],
         ], 200);
     } catch (PDOException $loi) {
@@ -590,10 +713,13 @@ try {
 
 // Dùng switch để chọn hàm xử lý tương ứng với phương thức HTTP.
 switch ($phuongThuc) {
-    // GET: trả danh sách sản phẩm.
+    // GET: trả danh sách sản phẩm theo trang được yêu cầu.
     case 'GET':
-        // Gọi hàm lấy danh sách và kết thúc yêu cầu.
-        xuLyLayDanhSach($pdo);
+        // Đọc và kiểm tra page/limit trên URL; sai định dạng sẽ trả lỗi 400 tại đây.
+        $phanTrang = layThamSoPhanTrang();
+
+        // Gọi hàm lấy danh sách với trang và giới hạn vừa hợp lệ, rồi kết thúc yêu cầu.
+        xuLyLayDanhSach($pdo, $phanTrang['page'], $phanTrang['limit']);
 
     // POST: thêm sản phẩm mới.
     case 'POST':

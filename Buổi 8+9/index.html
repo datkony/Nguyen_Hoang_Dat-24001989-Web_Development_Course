@@ -49,8 +49,8 @@
           <div class="status-card" aria-live="polite">
             <!-- Nhãn mô tả ý nghĩa của con số bên dưới. -->
             <span class="status-label">Sản phẩm hiện có</span>
-            <!-- Con số lấy từ mảng products, tự cập nhật sau mỗi lần gọi lại API. -->
-            <strong class="status-value" data-testid="product-count">{{ products.length }}</strong>
+            <!-- Con số lấy từ pagination.total do API trả về, không phải số dòng của riêng trang hiện tại. -->
+            <strong class="status-value" data-testid="product-count">{{ pagination.total }}</strong>
             <!-- Dòng trạng thái thay đổi giữa "Đang tải..." và "Đã đồng bộ". -->
             <span class="status-note" :class="{ 'is-loading': loading }">
               <!-- Hiển thị trạng thái tương ứng với biến loading. -->
@@ -150,6 +150,56 @@
                 <p class="field-hint">Số nguyên không âm; nhập 0 nếu sản phẩm đã hết hàng.</p>
               </div>
 
+              <!--
+                Ô chọn ảnh sản phẩm.
+                accept giới hạn sơ bộ các định dạng JPG/JPEG/PNG; Vue và PHP sẽ kiểm tra kỹ hơn.
+                ref="fileInput" giúp resetForm/xoaAnhDaChon xóa được giá trị của ô input.
+              -->
+              <div class="field image-field">
+                <!-- Nhãn liên kết với ô chọn ảnh thông qua thuộc tính for/id. -->
+                <label for="product-image">Ảnh sản phẩm (tùy chọn)</label>
+                <!--
+                  Chọn đúng một tệp ảnh. Khi đang gửi lưu hoặc upload thì ô này bị khóa.
+                  Sự kiện change gọi onFileChange để kiểm tra và tạo URL xem trước.
+                -->
+                <input
+                  id="product-image"
+                  ref="fileInput"
+                  type="file"
+                  accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                  :disabled="submitting || uploading"
+                  data-testid="image-input"
+                  @change="onFileChange"
+                />
+                <!-- Gợi ý giới hạn định dạng và dung lượng để người dùng chọn đúng. -->
+                <p class="field-hint">Chấp nhận JPG, JPEG hoặc PNG, dung lượng tối đa 2 MB. Có thể để trống.</p>
+
+                <!--
+                  Khu vực xem trước: ưu tiên ảnh mới chọn (blob), nếu không có thì dùng ảnh cũ của sản phẩm.
+                  Chỉ hiển thị khi có một trong hai nguồn ảnh.
+                -->
+                <div v-if="imagePreview || form.image" class="image-preview" data-testid="image-preview">
+                  <!-- Ảnh xem trước, src là URL blob tạm hoặc đường dẫn uploads đã lưu. -->
+                  <img
+                    :src="imagePreview || form.image"
+                    alt="Xem trước ảnh sản phẩm"
+                    data-testid="preview-image"
+                  />
+                  <!-- Nút bỏ ảnh mới chọn, chỉ cần thiết khi có file mới được chọn. -->
+                  <button
+                    v-if="imagePreview"
+                    type="button"
+                    class="btn btn-small btn-secondary"
+                    :disabled="submitting || uploading"
+                    data-testid="remove-image-button"
+                    @click="xoaAnhDaChon"
+                  >
+                    <!-- Nhãn nút bỏ ảnh đã chọn. -->
+                    Bỏ ảnh đã chọn
+                  </button>
+                </div>
+              </div>
+
               <!-- Ghi chú cho biết dữ liệu còn được kiểm tra lại ở phía PHP. -->
               <p class="form-note">
                 Dữ liệu được kiểm tra ở cả giao diện và API PHP trước khi ghi vào MySQL.
@@ -223,8 +273,8 @@
               <div class="stat-chip">
                 <!-- Nhãn của chỉ số tổng sản phẩm. -->
                 <span>Tổng sản phẩm</span>
-                <!-- Giá trị được tính trực tiếp từ độ dài mảng products. -->
-                <strong data-testid="total-products">{{ products.length }}</strong>
+                <!-- Giá trị lấy từ pagination.total: tổng số sản phẩm trong toàn bộ bảng. -->
+                <strong data-testid="total-products">{{ pagination.total }}</strong>
               </div>
               <!-- Thẻ hiển thị tổng giá trị tồn kho theo công thức giá nhân số lượng. -->
               <div class="stat-chip">
@@ -247,6 +297,21 @@
             >
               <!-- Nội dung thông báo lỗi. -->
               <span>{{ errorMessage }}</span>
+              <!--
+                Nút thử lại chỉ xuất hiện khi thông tin sản phẩm đã lưu nhưng upload ảnh thất bại.
+                Nhờ nút này người dùng không phải lưu lại sản phẩm (tránh tạo bản ghi trùng).
+              -->
+              <button
+                v-if="pendingUploadId !== null"
+                type="button"
+                class="btn btn-small btn-retry"
+                :disabled="uploading"
+                data-testid="retry-upload-button"
+                @click="retryUpload"
+              >
+                <!-- Đổi chữ trong lúc đang gửi lại ảnh để người dùng biết tiến trình. -->
+                {{ uploading ? 'Đang thử lại...' : 'Thử lại upload ảnh' }}
+              </button>
               <!-- Nút đóng thông báo lỗi để giải phóng không gian giao diện. -->
               <button
                 type="button"
@@ -300,7 +365,7 @@
               <table>
                 <!-- Mô tả ẩn dành cho trình đọc màn hình. -->
                 <caption class="visually-hidden">
-                  Danh sách sản phẩm gồm mã, tên, đơn giá, số lượng tồn và các nút thao tác
+                  Danh sách sản phẩm gồm mã, ảnh, tên, đơn giá, số lượng tồn và các nút thao tác
                 </caption>
                 <!-- Phần đầu bảng khai báo ý nghĩa của từng cột. -->
                 <thead>
@@ -308,6 +373,8 @@
                   <tr>
                     <!-- Cột mã sản phẩm. -->
                     <th scope="col">ID</th>
+                    <!-- Cột ảnh thu nhỏ của sản phẩm. -->
+                    <th scope="col">Ảnh</th>
                     <!-- Cột tên sản phẩm. -->
                     <th scope="col">Tên sản phẩm</th>
                     <!-- Cột đơn giá, căn phải để dễ so sánh số. -->
@@ -332,6 +399,22 @@
                   >
                     <!-- Hiển thị mã sản phẩm. -->
                     <td class="id-cell">#{{ product.id }}</td>
+                    <!--
+                      Hiển thị ảnh thu nhỏ nếu sản phẩm có đường dẫn ảnh.
+                      Nếu không có ảnh thì hiện đúng chữ "Chưa có ảnh" theo yêu cầu đề bài.
+                    -->
+                    <td class="image-cell">
+                      <!-- Ảnh thumbnail, alt mô tả tên sản phẩm để hỗ trợ trình đọc màn hình. -->
+                      <img
+                        v-if="product.image"
+                        class="product-thumb"
+                        :src="product.image"
+                        :alt="'Ảnh sản phẩm ' + product.name"
+                        :data-testid="'product-image-' + product.id"
+                      />
+                      <!-- Thông báo thay thế khi sản phẩm chưa có ảnh. -->
+                      <span v-else class="no-image" :data-testid="'no-image-' + product.id">Chưa có ảnh</span>
+                    </td>
                     <!-- Hiển thị tên sản phẩm. -->
                     <td class="name-cell">{{ product.name }}</td>
                     <!-- Hiển thị đơn giá đã định dạng theo tiền Việt Nam. -->
@@ -378,6 +461,42 @@
                 </tbody>
               </table>
             </div>
+
+            <!--
+              Thanh phân trang luôn hiển thị, kể cả khi danh sách rỗng.
+              Dòng thông tin và trạng thái nút được lấy từ state pagination do API trả về.
+            -->
+            <nav class="pagination" aria-label="Phân trang sản phẩm" data-testid="pagination">
+              <!-- Nút về trang trước: khóa ở trang đầu hoặc đang tải. -->
+              <button
+                type="button"
+                class="btn btn-small btn-secondary"
+                :disabled="loading || pagination.page <= 1"
+                data-testid="prev-page-button"
+                @click="goToPage(pagination.page - 1)"
+              >
+                <!-- Nhãn nút theo đúng yêu cầu đề bài. -->
+                Trước
+              </button>
+
+              <!-- Dòng thông tin: Trang X / Y — Tổng Z sản phẩm. -->
+              <span class="pagination-info" aria-live="polite" data-testid="pagination-info">
+                <!-- Trang hiện thực do API xác nhận, có thể nhỏ hơn page đã yêu cầu. -->
+                Trang {{ pagination.page }} / {{ pagination.total_pages }} — Tổng {{ pagination.total }} sản phẩm
+              </span>
+
+              <!-- Nút sang trang sau: khóa ở trang cuối hoặc đang tải. -->
+              <button
+                type="button"
+                class="btn btn-small btn-secondary"
+                :disabled="loading || pagination.page >= pagination.total_pages"
+                data-testid="next-page-button"
+                @click="goToPage(pagination.page + 1)"
+              >
+                <!-- Nhãn nút theo đúng yêu cầu đề bài. -->
+                Sau
+              </button>
+            </nav>
           </section>
         </main>
 

@@ -429,6 +429,78 @@ h1 {
   color: var(--color-muted);
 }
 
+/* Ô chọn ảnh: kế thừa kiểu ô nhập nhưng bỏ nền để trông như một nút chọn tệp. */
+.image-field input[type="file"] {
+  /* Giữ padding của ô nhập nhưng để trình duyệt hiển thị tên tệp và nút "Choose File". */
+  padding: 0.55rem 0.6rem;
+  /* Con trỏ bàn tay để người dùng biết có thể bấm chọn tệp. */
+  cursor: pointer;
+}
+
+/* Khung xem trước ảnh trong biểu mẫu. */
+.image-preview {
+  /* Xếp ảnh và nút bỏ ảnh trên cùng một hàng. */
+  display: flex;
+  /* Căn giữa theo chiều dọc. */
+  align-items: center;
+  /* Khoảng cách giữa ảnh và nút. */
+  gap: 0.75rem;
+  /* Đệm nhẹ quanh khung. */
+  padding: 0.6rem;
+  /* Viền đứt nét để phân biệt khu vực xem trước với ô nhập. */
+  border: 1px dashed var(--color-border);
+  /* Bo góc khung xem trước. */
+  border-radius: var(--radius-md);
+  /* Nền xanh rất nhạt làm nổi bật ảnh. */
+  background: var(--color-primary-soft);
+}
+
+/* Ảnh xem trước trong biểu mẫu. */
+.image-preview img {
+  /* Kích thước cố định để biểu mẫu không giãn khi đổi ảnh. */
+  width: 72px;
+  /* Chiều cao cố định tương ứng. */
+  height: 72px;
+  /* Cắt ảnh theo tỉ lệ vuông thay vì kéo méo. */
+  object-fit: cover;
+  /* Bo góc ảnh xem trước. */
+  border-radius: 10px;
+  /* Viền mỏng để ảnh nổi trên nền xanh nhạt. */
+  border: 1px solid var(--color-border);
+}
+
+/* Ảnh thu nhỏ hiển thị trong bảng sản phẩm. */
+.product-thumb {
+  /* Kích thước nhỏ vừa đủ để nhận diện sản phẩm. */
+  width: 48px;
+  /* Chiều cao bằng chiều rộng để tạo ô vuông. */
+  height: 48px;
+  /* Cắt ảnh theo tỉ lệ vuông. */
+  object-fit: cover;
+  /* Bo góc ảnh thu nhỏ. */
+  border-radius: 8px;
+  /* Viền nhẹ tách ảnh khỏi nền bảng. */
+  border: 1px solid var(--color-border);
+}
+
+/* Chữ hiển thị khi sản phẩm chưa có ảnh. */
+.no-image {
+  /* Chữ nhỏ hơn nội dung bảng. */
+  font-size: 0.78rem;
+  /* Màu chữ phụ để không gây chú ý quá mức. */
+  color: var(--color-muted);
+  /* In nghiêng để gợi đây là trạng thái thiếu dữ liệu. */
+  font-style: italic;
+  /* Không cho xuống dòng để ô bảng gọn. */
+  white-space: nowrap;
+}
+
+/* Cột ảnh trong bảng: giữ chiều rộng ổn định giữa các dòng. */
+.image-cell {
+  /* Chiều rộng tối thiểu đủ cho ảnh 48px và khoảng đệm. */
+  min-width: 96px;
+}
+
 /* Ghi chú chung của biểu mẫu. */
 .form-note {
   /* Kích thước chữ nhỏ. */
@@ -697,6 +769,24 @@ td .btn + .btn {
   background: rgba(0, 0, 0, 0.06);
 }
 
+/* Nút thử lại upload xuất hiện trong hộp thông báo lỗi. */
+.btn-retry {
+  /* Nền trắng để nổi bật trên nền lỗi màu đỏ nhạt. */
+  background: #ffffff;
+  /* Viền đỏ nhạt cùng tông với hộp thông báo. */
+  border-color: #f5c6c1;
+  /* Chữ đỏ đậm để người dùng nhận đây là hành động khắc phục lỗi. */
+  color: var(--color-danger);
+}
+
+/* Trạng thái rê chuột lên nút thử lại upload. */
+.btn-retry:not(:disabled):hover {
+  /* Nền đỏ rất nhạt tạo phản hồi khi rê chuột. */
+  background: var(--color-danger-bg);
+  /* Đậm viền hơn một chút. */
+  border-color: var(--color-danger);
+}
+
 /* Khung hiển thị trạng thái đang tải hoặc danh sách rỗng. */
 .state-box {
   /* Sắp xếp nội dung theo chiều dọc. */
@@ -932,6 +1022,34 @@ tbody tr.is-editing {
   color: var(--color-danger);
 }
 
+/* Thanh phân trang đặt dưới bảng, luôn hiển thị kể cả khi danh sách rỗng. */
+.pagination {
+  /* Xếp nút Trước, dòng thông tin và nút Sau trên cùng một hàng. */
+  display: flex;
+  /* Căn giữa các phần tử theo chiều dọc. */
+  align-items: center;
+  /* Giãn khoảng cách để các nút nằm ở hai đầu. */
+  justify-content: space-between;
+  /* Khoảng cách dự phòng giữa các phần tử trên màn hình hẹp. */
+  gap: 0.75rem;
+  /* Khoảng cách phía trên tách thanh phân trang khỏi bảng. */
+  margin-top: 1.1rem;
+  /* Đường kẻ ngang phân biệt khu vực điều hướng với nội dung bảng. */
+  border-top: 1px solid var(--color-border);
+  /* Đệm phía trên đường kẻ. */
+  padding-top: 1rem;
+}
+
+/* Dòng thông tin "Trang X / Y — Tổng Z sản phẩm". */
+.pagination-info {
+  /* Chữ nhỏ hơn nội dung chính. */
+  font-size: 0.88rem;
+  /* Màu chữ phụ để không lấn át nút bấm. */
+  color: var(--color-muted);
+  /* Căn giữa dòng thông tin. */
+  text-align: center;
+}
+
 /* Chân trang. */
 .page-footer {
   /* Sắp xếp hai dòng ghi chú theo hàng ngang. */
@@ -1051,6 +1169,14 @@ code {
   .form-actions .btn {
     /* Kéo nút rộng hết khung chứa để dễ bấm. */
     width: 100%;
+  }
+
+  /* Trên màn hình nhỏ, xếp thanh phân trang thành cột để chữ không bị ép. */
+  .pagination {
+    /* Chuyển từ hàng ngang sang cột dọc. */
+    flex-direction: column;
+    /* Căn giữa các nút và dòng thông tin. */
+    align-items: center;
   }
 
   /* Chân trang chuyển thành một cột. */
